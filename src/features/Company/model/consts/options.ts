@@ -16,6 +16,7 @@ export const companyTableOptions = [
     { id: 'lastName', name: 'Nazwisko' },
     { id: 'role', name: 'Rola' },
     { id: 'phone', name: 'Telefon' },
+    { id: 'phone2', name: 'Telefon 2' },
     { id: 'email', name: 'E-mail' },
     { id: 'activation', name: 'Aktywacja' },
     { id: 'rentalFee', name: 'Czynsz' },

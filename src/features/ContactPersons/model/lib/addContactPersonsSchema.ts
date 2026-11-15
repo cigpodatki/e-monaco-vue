@@ -7,6 +7,7 @@ export const addPersonsModalValidationSchema = yup
         lastName: yup.string(),
         role: yup.string(),
         phone: yup.string().nullable(),
+        phone2: yup.string().nullable(),
         email: yup.string().nullable(),
         companyId: yup.string().required('Pole jest obowiązkowe'),
         top: yup.boolean().default(false),

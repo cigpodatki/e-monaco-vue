@@ -78,6 +78,11 @@ const onSubmit = (values: unknown) => {
                         placeholder="123-456-789"
                     />
                     <Input
+                        name="phone2"
+                        label="Telefon 2"
+                        placeholder="123-456-789"
+                    />
+                    <Input
                         name="email"
                         label="E-mail"
                         placeholder="jan.kowalski@gmail.com"

@@ -68,6 +68,24 @@ const columns = [
             }),
         header: () => 'Telefon',
     }),
+    columnHelper.accessor((row) => row.phone2, {
+        id: 'phone2',
+        cell: (info) =>
+            h(CommentInput, {
+                placeholder: '123-456-789',
+                onUpdate: onDataChange(info.row.original.id, 'phone2'),
+                defaultValue: info.getValue(),
+                validateFn: (value: string) => {
+                    const isValid = validatePhone(value)
+                    if (!isValid) {
+                        toast.error('Niepoprawny numer telefonu')
+                        return isValid
+                    }
+                    return isValid
+                },
+            }),
+        header: () => 'Telefon 2',
+    }),
     columnHelper.accessor((row) => row.role, {
         id: 'role',
         cell: (info) =>

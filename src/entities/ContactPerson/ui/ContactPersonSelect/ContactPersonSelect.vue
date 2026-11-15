@@ -43,6 +43,9 @@ function getInfo(person: ContactPerson) {
     if (person.phone) {
         value.push(`Telefon: ${person.phone}`)
     }
+    if (person.phone2) {
+        value.push(`Telefon 2: ${person.phone2}`)
+    }
     if (person.firstName) {
         value.push(`Imię: ${person.firstName} ${person.lastName ?? ''}`)
     }

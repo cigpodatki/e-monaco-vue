@@ -70,6 +70,7 @@ const sortNameMap: Record<string, string> = {
     year: 'Rok',
     role: 'Rola',
     phone: 'Telefon',
+    phone2: 'Telefon 2',
     email: 'Email',
     tractor: 'Stawka ciągnik',
     trailer: 'Stawka naczepa',

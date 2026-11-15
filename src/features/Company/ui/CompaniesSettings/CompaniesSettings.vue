@@ -88,6 +88,7 @@ const getDuplicatedCompanyData = (leadData: any) => {
                   lastName: person.lastName || '',
                   role: person.role || '',
                   phone: person.phone || '',
+                  phone2: person.phone2 || '',
                   email: isValidEmail(person.email) ? person.email : null,
               }))
             : [],

@@ -6,6 +6,7 @@ export interface ContactPerson {
     lastName?: string
     role?: string
     phone?: string
+    phone2?: string
     email?: string
     top: boolean
     company: Company

@@ -35,8 +35,16 @@ const emit = defineEmits(['update:isModalOpen'])
 const onSubmit = async (values: any) => {
     console.log('Form values:', values)
 
-    const { firstName, lastName, role, phone, email, campaigns, ...other } =
-        values
+    const {
+        firstName,
+        lastName,
+        role,
+        phone,
+        phone2,
+        email,
+        campaigns,
+        ...other
+    } = values
 
     const campaignId = campaigns || null
     const campaignTitle = campaigns ? campaigns.title : null
@@ -46,7 +54,14 @@ const onSubmit = async (values: any) => {
         campaignId,
         campaignTitle,
         contactPersons: [
-            { firstName, lastName, role, phone, email: email || undefined },
+            {
+                firstName,
+                lastName,
+                role,
+                phone,
+                phone2,
+                email: email || undefined,
+            },
         ],
     })
 }
@@ -172,6 +187,12 @@ const onSubmit = async (values: any) => {
                     <Input
                         name="phone"
                         label="Telefon"
+                        placeholder="Numer telefonu"
+                        type="tel"
+                    />
+                    <Input
+                        name="phone2"
+                        label="Telefon 2"
                         placeholder="Numer telefonu"
                         type="tel"
                     />

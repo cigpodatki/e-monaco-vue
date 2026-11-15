@@ -610,6 +610,42 @@ const columns = ref([
             })
         },
     }),
+    columnHelper.accessor((row) => row.phone2, {
+        id: 'phone2',
+        cell: (info) =>
+            h(CommentInput, {
+                key: info.row.original.id,
+                className: propcls.largeFont,
+                onUpdate: (newValue: string) =>
+                    updateContactPerson({
+                        id: info.row.original.topContactPersonId!,
+                        phone2: newValue,
+                    }),
+                defaultValue: info.getValue(),
+                placeholder: 'Telefon 2',
+                validateFn: () => {
+                    const isValid = !!info.row.original.topContactPersonId
+                    if (!isValid) {
+                        toast.error(
+                            'Firma nie posiada głównej osoby kontaktowej (z włączoną wartością TOP).',
+                        )
+                        return isValid
+                    }
+                    return isValid
+                },
+            }),
+        header: () => {
+            return h(SortHeader, {
+                name: 'Telefon 2',
+                onUpdate: changeOrder('phone2'),
+                value:
+                    companyFilterStore.getOrderBy === 'phone2'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('phone2'),
+            })
+        },
+    }),
     columnHelper.accessor((row) => row.email, {
         id: 'email',
         cell: (info) =>

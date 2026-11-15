@@ -34,6 +34,7 @@ export interface Company {
     full_name: string
     role: string
     phone: string
+    phone2: string
     email: string
     last_contact_date: string
     last_contact_comment: string
