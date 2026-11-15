@@ -1,6 +1,7 @@
 import { isValidDateFormat } from '@/shared/lib/date'
 import { validateNip } from '@/shared/lib/nip'
 import * as yup from 'yup'
+import { DeclarationStatus } from '@/entities/DeclarationStatus'
 
 yup.addMethod(yup.string, 'nip', function (errorMessage) {
     return this.test(`nip`, errorMessage, function (value) {
@@ -63,6 +64,11 @@ export const addCompanyValidationSchema = yup.object().shape({
         .transform((value, originalValue) => (originalValue === '' ? 0 : value))
         .min(0, 'Pole musi być powyżej 0')
         .default(0),
+
+    declarationStatus: yup
+        .string()
+        .oneOf(Object.values(DeclarationStatus), 'Nieprawidłowa wartość DEKL')
+        .required('Pole DEKL jest obowiązkowe'),
 
     firstName: yup.string().nullable().optional(),
     lastName: yup.string().nullable().optional(),

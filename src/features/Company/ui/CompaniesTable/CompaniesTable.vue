@@ -42,6 +42,8 @@ import CampaignSelect from '@/features/Campaign/ui/CampaignSelect/CampaignSelect
 import EditContactPersonsModal from '@/features/EditContactPersonsModal/EditContactPersonsModal.vue'
 import { useUpdatePersons } from '@/features/ContactPersons/model/services/useUpdatePersons'
 import CampaignFilter from '@/features/CompanyFilter/ui/CampaignFilter/CampaignFilter.vue'
+import DeclarationStatusFilter from '@/features/CompanyFilter/ui/DeclarationStatusFilter/DeclarationStatusFilter.vue'
+import { DeclarationStatusSelect } from '@/entities/DeclarationStatus'
 import { formatDate } from '@/shared/lib/date'
 import CompaniesSettings from '../CompaniesSettings/CompaniesSettings.vue'
 
@@ -811,6 +813,30 @@ const columns = ref([
                 loading: isSortHeaderLoading('company.declarationFee'),
             })
         },
+    }),
+    columnHelper.accessor((row) => row.declarationStatus, {
+        id: 'declarationStatus',
+        cell: (info) =>
+            h(DeclarationStatusSelect, {
+                key: info.row.original.id,
+                name: 'declarationStatus',
+                defaultValue: info.row.original.declarationStatus,
+                onUpdate: onDataChange(
+                    info.row.original.id,
+                    'declarationStatus',
+                ),
+            }),
+        header: () =>
+            h(SortHeader, {
+                name: 'DEKL',
+                filter: DeclarationStatusFilter,
+                onUpdate: changeOrder('company.declarationStatus'),
+                value:
+                    companyFilterStore.getOrderBy === 'company.declarationStatus'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('company.declarationStatus'),
+            }),
     }),
     columnHelper.accessor((row) => row.tractor, {
         id: 'tractor',

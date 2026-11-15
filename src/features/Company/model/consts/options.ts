@@ -22,6 +22,7 @@ export const companyTableOptions = [
     { id: 'rentalFee', name: 'Baza 1mc' },
     { id: 'statement', name: 'Biuro 6mc' },
     { id: 'declarationFee', name: 'Deklaracja' },
+    { id: 'declarationStatus', name: 'DEKL' },
     { id: 'tractor', name: 'Stawka ciągnik' },
     { id: 'trailer', name: 'Stawka naczepa' },
     { id: 'ourTaxes', name: 'Podatek u nas' },

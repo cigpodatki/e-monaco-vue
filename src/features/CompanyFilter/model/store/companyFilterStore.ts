@@ -1,4 +1,5 @@
 import type { CompanyStatus } from '@/entities/Status'
+import type { DeclarationStatus } from '@/entities/DeclarationStatus'
 import type { Order } from '@/shared/types/order'
 import { defineStore } from 'pinia'
 import { PAGE_SIZE } from '@/shared/const/pagination'
@@ -79,6 +80,7 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
     state: () => ({
         owners: [] as string[],
         status: [] as CompanyStatus[],
+        declarationStatuses: [] as DeclarationStatus[],
         municipalities: [] as string[],
         contactPersons: [] as string[],
         order: null as null | Order,
@@ -130,6 +132,9 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         },
         getCampaigns(state) {
             return state.campaigns
+        },
+        getDeclarationStatuses(state) {
+            return state.declarationStatuses
         },
     },
     actions: {
@@ -208,6 +213,10 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         },
         setCampaigns(campaigns: string[]) {
             this.campaigns = campaigns
+            this.page = 1
+        },
+        setDeclarationStatuses(value: DeclarationStatus[]) {
+            this.declarationStatuses = value
             this.page = 1
         },
     },

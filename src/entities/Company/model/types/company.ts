@@ -2,6 +2,7 @@ import type { ContactHistory } from '@/entities/ContactHistory'
 import type { ContactPerson } from '@/entities/ContactPerson'
 import type { Municipality } from '@/entities/Municipality'
 import type { CompanyStatus } from '@/entities/Status'
+import type { DeclarationStatus } from '@/entities/DeclarationStatus'
 import type { User } from '@/entities/User'
 
 export interface Company {
@@ -23,6 +24,7 @@ export interface Company {
     rentalFee?: number
     statement?: number
     declarationFee?: number
+    declarationStatus?: DeclarationStatus
     contactPersons: ContactPerson[]
     markDeleted: boolean
     frugality: number

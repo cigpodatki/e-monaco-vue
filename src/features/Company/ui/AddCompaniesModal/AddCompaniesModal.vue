@@ -15,6 +15,7 @@ import Datepicker from '@/shared/ui/Datepicker/Datepicker.vue'
 import InputNipModal from '@/shared/ui/InputNipModal/InputNipModal.vue'
 import { storeToRefs } from 'pinia'
 import CampaignSelect from '@/features/Campaign/ui/CampaignSelect/CampaignSelect.vue'
+import { DeclarationStatusSelect } from '@/entities/DeclarationStatus'
 
 interface Props {
     isModalOpen: boolean
@@ -165,6 +166,11 @@ const onSubmit = async (values: any) => {
                         label="Deklaracja"
                         placeholder="Kwota w PLN"
                         type="number"
+                    />
+                    <DeclarationStatusSelect
+                        label="DEKL"
+                        as-input
+                        name="declarationStatus"
                     />
                     <Input
                         name="firstName"
