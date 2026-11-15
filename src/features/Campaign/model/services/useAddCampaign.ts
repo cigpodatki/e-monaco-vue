@@ -1,30 +1,31 @@
 import { $api } from '@/shared/api/api'
 import { useMutation, useQueryClient } from 'vue-query'
 import { useToast } from 'vue-toastification'
+import type { Campaign } from '@/entities/Campaign'
+import { getApiErrorMessage } from '../lib/getApiErrorMessage'
 
-export const useAddCampaign = (setIsModalOpen: (value: boolean) => void) => {
+export const useAddCampaign = (onSuccess?: () => void) => {
     const toast = useToast()
     const queryClient = useQueryClient()
+
     return useMutation(
         'add-campaign',
-        async (data) => {
-            try {
-                const response = await $api.post('campaigns', data)
-                return response.data
-            } catch (error) {
-                console.error('Błąd podczas wysyłania żądania:', error.message)
-                throw error
-            }
+        async (data: { title: string }) => {
+            const response = await $api.post<Campaign>('campaigns', data)
+            return response.data
         },
         {
             onSuccess: () => {
                 toast.success('Pomyślnie dodano kampanię')
-                setIsModalOpen(false)
                 queryClient.invalidateQueries('campaigns')
+                onSuccess?.()
             },
-            onError: () => {
+            onError: (error) => {
                 toast.error(
-                    'Nie udało się dodać kampanii. Spróbuj ponownie później',
+                    getApiErrorMessage(
+                        error,
+                        'Nie udało się dodać kampanii. Spróbuj ponownie później',
+                    ),
                 )
             },
         },

@@ -1,0 +1,36 @@
+// Same approach as the Gminy table: the app body doesn't scroll.
+.tableWrapper {
+    width: calc(100vw - var(--sidebar-width) - 2rem);
+    height: 70vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.CampaignManagementTable {
+    width: max-content;
+    min-width: 40rem;
+    border-collapse: collapse;
+}
+
+.header {
+    border-bottom: 1px solid var(--stroke-color);
+    text-align: left;
+}
+
+.cell {
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+    font: var(--font-s);
+    white-space: nowrap;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.row {
+    border-bottom: 1px solid var(--stroke-color);
+}
+
+.marked {
+    background-color: var(--primaty-variant-bg-marked-color);
+}

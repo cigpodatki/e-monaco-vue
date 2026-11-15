@@ -8,6 +8,8 @@ import Flex from '@/shared/ui/Flex/Flex.vue'
 interface Props {
     isOpen: boolean
     title?: string
+    // Defaults to the lead question, which is where the modal started.
+    message?: string
 }
 
 const props = defineProps<Props>()
@@ -36,7 +38,12 @@ function confirmDelete() {
             :class="cls.wrapper"
         >
             <div :class="cls.body">
-                <p>Czy na pewno chcesz usunąć danego leada?</p>
+                <p>
+                    {{
+                        props.message ||
+                        'Czy na pewno chcesz usunąć danego leada?'
+                    }}
+                </p>
             </div>
         </Flex>
         <div :class="cls.footer">

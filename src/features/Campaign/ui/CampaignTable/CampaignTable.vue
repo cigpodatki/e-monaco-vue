@@ -239,9 +239,7 @@ const table2 = useVueTable({
 
 <template>
     <div :class="cls.campaignTables">
-        <h2 :class="cls.headerTitle">
-            Kampania: {{ campaign.title }} {{ campaign.season }}
-        </h2>
+        <h2 :class="cls.headerTitle">Kampania: {{ campaign.title }}</h2>
         <table :class="cls.CampaignTable">
             <thead :class="cls.header">
                 <tr>
