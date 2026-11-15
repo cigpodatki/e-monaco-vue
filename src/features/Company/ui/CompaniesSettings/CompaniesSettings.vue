@@ -74,6 +74,7 @@ const getDuplicatedCompanyData = (leadData: any) => {
         activation: rawLeadData.activation || 0,
         rentalFee: rawLeadData.rentalFee || 0,
         statement: rawLeadData.statement || 0,
+        declarationFee: rawLeadData.declarationFee || 0,
         kitrate: rawLeadData.kitrate || 0,
         supply: rawLeadData.supply || 0,
         taxincrease: rawLeadData.taxincrease || 0,

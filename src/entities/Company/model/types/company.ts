@@ -22,6 +22,7 @@ export interface Company {
     activation?: number
     rentalFee?: number
     statement?: number
+    declarationFee?: number
     contactPersons: ContactPerson[]
     markDeleted: boolean
     frugality: number

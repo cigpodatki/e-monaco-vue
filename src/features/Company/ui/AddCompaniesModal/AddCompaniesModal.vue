@@ -150,12 +150,18 @@ const onSubmit = async (values: any) => {
                     />
                     <Input
                         name="rentalFee"
-                        label="Czynsz"
+                        label="Baza 1mc"
                         type="number"
                         placeholder="Kwota w PLN"
                     />
                     <Input
                         name="statement"
+                        label="Biuro 6mc"
+                        placeholder="Kwota w PLN"
+                        type="number"
+                    />
+                    <Input
+                        name="declarationFee"
                         label="Deklaracja"
                         placeholder="Kwota w PLN"
                         type="number"

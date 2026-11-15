@@ -166,7 +166,9 @@ const debouncedInputChange = debounce((value) => {
                                 currentOption.length
                             "
                         >
-                            Wybrano: {{ currentOption?.length }}
+                            Wybrano: {{ currentOption?.length }}/{{
+                                options?.length
+                            }}
                         </span>
                         <span v-else>
                             {{ currentOption?.name }}

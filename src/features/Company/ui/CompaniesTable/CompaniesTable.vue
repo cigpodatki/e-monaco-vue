@@ -751,7 +751,7 @@ const columns = ref([
             ]),
         header: () => {
             return h(SortHeader, {
-                name: 'Czynsz',
+                name: 'Baza 1mc',
                 onUpdate: changeOrder('company.rentalFee'),
                 value:
                     companyFilterStore.getOrderBy === 'company.rentalFee'
@@ -775,13 +775,40 @@ const columns = ref([
             ]),
         header: () => {
             return h(SortHeader, {
-                name: 'Deklaracja',
+                name: 'Biuro 6mc',
                 onUpdate: changeOrder('company.statement'),
                 value:
                     companyFilterStore.getOrderBy === 'company.statement'
                         ? companyFilterStore.getOrder
                         : null,
                 loading: isSortHeaderLoading('company.statement'),
+            })
+        },
+    }),
+    columnHelper.accessor((row) => row.declarationFee, {
+        id: 'declarationFee',
+        cell: (info) =>
+            h('div', { class: cls.narrowColumn }, [
+                h(PriceInput, {
+                    key: info.row.original.id,
+                    onUpdate: onDataChange(
+                        info.row.original.id,
+                        'declarationFee',
+                    ),
+                    defaultValue: info.row.original.declarationFee,
+                    withPrice: true,
+                    placeholder: 'Kwota',
+                }),
+            ]),
+        header: () => {
+            return h(SortHeader, {
+                name: 'Deklaracja',
+                onUpdate: changeOrder('company.declarationFee'),
+                value:
+                    companyFilterStore.getOrderBy === 'company.declarationFee'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('company.declarationFee'),
             })
         },
     }),

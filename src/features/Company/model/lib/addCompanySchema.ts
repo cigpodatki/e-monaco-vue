@@ -58,6 +58,12 @@ export const addCompanyValidationSchema = yup.object().shape({
         .min(0, 'Pole musi być powyżej 0')
         .default(0),
 
+    declarationFee: yup
+        .number()
+        .transform((value, originalValue) => (originalValue === '' ? 0 : value))
+        .min(0, 'Pole musi być powyżej 0')
+        .default(0),
+
     firstName: yup.string().nullable().optional(),
     lastName: yup.string().nullable().optional(),
     email: yup
