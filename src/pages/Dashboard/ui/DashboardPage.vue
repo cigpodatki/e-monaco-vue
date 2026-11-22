@@ -5,6 +5,7 @@ import Flex from '@/shared/ui/Flex/Flex.vue'
 import Breadcrumbs from '@/shared/ui/Breadcrumbs/Breadcrumbs.vue'
 import { breadcrumbs } from '../model/consts/breadcrumbs'
 import { CompaniesFilter, CompaniesTable } from '@/features/Company/index'
+import { OverdueAlertModal } from '@/features/OverdueAlert'
 
 const selectionCount = ref<number>(0)
 const selectedCompanies = ref<string[]>([])
@@ -56,5 +57,7 @@ const handleClearSelection = () => {
                 />
             </Flex>
         </Flex>
+        <!-- Opened after login if the user has overdue leads. -->
+        <OverdueAlertModal />
     </div>
 </template>

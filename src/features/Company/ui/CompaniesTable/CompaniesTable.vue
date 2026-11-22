@@ -44,7 +44,7 @@ import { useUpdatePersons } from '@/features/ContactPersons/model/services/useUp
 import CampaignFilter from '@/features/CompanyFilter/ui/CampaignFilter/CampaignFilter.vue'
 import DeclarationStatusFilter from '@/features/CompanyFilter/ui/DeclarationStatusFilter/DeclarationStatusFilter.vue'
 import { DeclarationStatusSelect } from '@/entities/DeclarationStatus'
-import { formatDate } from '@/shared/lib/date'
+import { formatDate, isOverdue } from '@/shared/lib/date'
 import CompaniesSettings from '../CompaniesSettings/CompaniesSettings.vue'
 
 const isModalOpen = ref(false)
@@ -209,6 +209,8 @@ const columns = ref([
                 placeholder: 'Wybierz datę',
                 onChange: onDataChange(info.row.original.id, 'nextContactDate'),
                 defaultValue: info.row.original.nextContactDate || undefined,
+                // Saving a new date reloads the list, so this updates by itself.
+                highlighted: isOverdue(info.row.original.nextContactDate),
             })
         },
         header: () => {

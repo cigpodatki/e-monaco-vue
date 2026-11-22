@@ -7,9 +7,11 @@ import {
 } from '@/shared/const/localStorage'
 import { useUserStore, type User } from '@/entities/User'
 import { useRouter } from 'vue-router'
+import { useOverdueAlert } from '@/features/OverdueAlert'
 
 export const useLogin = () => {
     const userStore = useUserStore()
+    const { checkOverdueLeads } = useOverdueAlert()
     const router = useRouter()
 
     return useMutation(
@@ -38,6 +40,9 @@ export const useLogin = () => {
 
                 userStore.setUser(res.data)
                 userStore.setInited()
+                // Not awaited: the dashboard opens right away and the alert
+                // pops up when the check returns.
+                checkOverdueLeads()
                 router.push('/dashboard')
             },
         },

@@ -14,6 +14,8 @@ interface Props {
     placeholder?: string
     width?: string
     defaultValue?: string
+    // Red bold text on a light red background (e.g. an overdue date).
+    highlighted?: boolean
 }
 
 const props = defineProps<Props>()
@@ -57,6 +59,7 @@ function onUpdate(newValue: string) {
         >
         <VueDatePicker
             v-model="value"
+            :class="{ [cls.highlighted]: highlighted }"
             teleport="body"
             position="left"
             locale="pl-PL"
@@ -70,7 +73,12 @@ function onUpdate(newValue: string) {
                 '--dp-font-family': 'var(--font-family)',
                 '--dp-font-size': 'var(--font-size-s)',
                 '--dp-border-radius': 'var(--default-border-radius)',
-                '--dp-background-color': 'var(--light-grey-color)',
+                '--dp-background-color': highlighted
+                    ? 'var(--status-red-bg-color)'
+                    : 'var(--light-grey-color)',
+                ...(highlighted
+                    ? { '--dp-text-color': 'var(--status-red-color)' }
+                    : {}),
                 '--dp-border-color-hover': 'var(--stroke-color)',
                 width: width,
                 '--dp-border-color': 'var(--stroke-color)',
