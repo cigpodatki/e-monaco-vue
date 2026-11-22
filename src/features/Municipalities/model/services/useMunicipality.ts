@@ -13,6 +13,7 @@ export type MunicipalityData = Ref<
 interface UseMunicipalityData {
     data: MunicipalityData
     isLoading: Ref<boolean>
+    isFetching: Ref<boolean>
     refetch: Ref<() => void>
 }
 
@@ -27,7 +28,9 @@ export const useMunicipality = (): UseMunicipalityData => {
             const response = await $api.get('municipalities', {
                 params: {
                     ...filters.value,
-                    skip: (page - 1) * PAGE_SIZE,
+                    // Use the selected page size (it used the default 16, so
+                    // page 2 of a 50-row page started at row 17).
+                    skip: (page - 1) * (filters.value?.take ?? PAGE_SIZE),
                     page: undefined,
                 },
             })

@@ -24,6 +24,7 @@ import { useToast } from 'vue-toastification'
 import ActionLink from '@/shared/ui/ActionLink/ActionLink.vue'
 import CompanyHistoriesModal from '../CompanyHistoriesModal/CompanyHistoriesModal.vue'
 import LoaderContainer from '@/shared/ui/LoaderContainer/LoaderContainer.vue'
+import FetchingOverlay from '@/shared/ui/FetchingOverlay/FetchingOverlay.vue'
 import Text from '@/shared/ui/Text/Text.vue'
 import {
     MunicipalitiesFilter,
@@ -1228,6 +1229,7 @@ const table = useVueTable({
         </div>
 
         <LoaderContainer :is-loading="isLoading"></LoaderContainer>
+        <FetchingOverlay :is-fetching="isFetching && !isLoading" />
         <CompaniesPagination :count="data?.count || 0" />
     </div>
 </template>

@@ -30,7 +30,8 @@ export const useCompanies = (): UseCompaniesData => {
             const response = await $api.get('companies', {
                 params: {
                     ...filters.value,
-                    skip: (page - 1) * (filters.value?.take || PAGE_SIZE),
+                    // ?? not ||: take 0 ("Wszystkie") is a real value.
+                    skip: (page - 1) * (filters.value?.take ?? PAGE_SIZE),
                     page: undefined,
                 },
             })

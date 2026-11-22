@@ -6,7 +6,11 @@ import Flex from '@/shared/ui/Flex/Flex.vue'
 import Icon from '@/shared/ui/Icon/Icon.vue'
 import ColorSquares from '@/shared/ui/ColorSquares/ColorSquares.vue'
 import { computed, toRefs, ref, onMounted } from 'vue'
-import { PAGE_SIZE } from '@/shared/const/pagination'
+import {
+    PAGE_SIZE,
+    PAGE_SIZE_OPTIONS,
+    getPagesCount,
+} from '@/shared/const/pagination'
 import { useCompanyFilterStore } from '@/features/CompanyFilter'
 import { storeToRefs } from 'pinia'
 import { useCompaniesData } from '@/features/Company/model/services/useCompanyData'
@@ -30,13 +34,15 @@ const { count } = toRefs(props)
 
 const selectedPageSize = ref(PAGE_SIZE)
 
-const pageSizeOptions = [10, 20, 50, 100]
-
 const changePageSize = () => {
+    // Back to page 1: the old page number may not exist with the new size.
+    filterStore.page = 1
     handleSetPageSize(selectedPageSize.value)
 }
 
-let pagesCount = computed(() => Math.ceil(count.value / selectedPageSize.value))
+let pagesCount = computed(() =>
+    getPagesCount(count.value, selectedPageSize.value),
+)
 
 const inputPage = ref(1)
 
@@ -90,11 +96,11 @@ const handleColorSelected = (color: string) => {
                 :class="cls.pageSizeSelect"
             >
                 <option
-                    v-for="option in pageSizeOptions"
-                    :key="option"
-                    :value="option"
+                    v-for="option in PAGE_SIZE_OPTIONS"
+                    :key="option.value"
+                    :value="option.value"
                 >
-                    {{ option }}
+                    {{ option.label }}
                 </option>
             </select>
             <Flex

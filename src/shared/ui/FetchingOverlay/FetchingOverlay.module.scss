@@ -1,0 +1,14 @@
+.FetchingOverlay {
+    // Centre of the screen.
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--modal-z-index);
+    padding: 0.5rem 1rem;
+    border-radius: var(--default-border-radius);
+    background-color: var(--primary-invert-color);
+    box-shadow: var(--box-shadow);
+    // Never blocks clicks on the page underneath.
+    pointer-events: none;
+}

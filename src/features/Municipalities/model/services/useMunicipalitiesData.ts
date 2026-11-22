@@ -1,5 +1,6 @@
 import { useMunicipalityFilterStore } from '@/features/MunicipalitiesFilter'
 import { $api } from '@/shared/api/api'
+import { PAGE_SIZE } from '@/shared/const/pagination'
 import { debounce } from 'lodash'
 import { ref, type Ref } from 'vue'
 import { useQuery, useQueryClient, type UseQueryOptions } from 'vue-query'
@@ -26,7 +27,8 @@ export const useMunicipalityData = (): UseMunicipalityData => {
     const fetchData = async (): Promise<MunicipalityData> => {
         try {
             const page = filters.value?.page || 1
-            const take = filters.value?.take || 1
+            // ?? not ||: take 0 ("Wszystkie") is a real value.
+            const take = filters.value?.take ?? PAGE_SIZE
             const response = await $api.get('municipalities', {
                 params: {
                     ...filters.value,
