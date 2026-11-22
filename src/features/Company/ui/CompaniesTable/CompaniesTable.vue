@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { createColumnHelper, getCoreRowModel } from '@tanstack/table-core'
 import { FlexRender, useVueTable } from '@tanstack/vue-table'
-import { h, ref, watch, computed } from 'vue'
+import { h, ref, watch, computed, type VNode } from 'vue'
 import cls from './CompaniesTable.module.scss'
+import highlightCls from '@/shared/styles/highlight.module.scss'
 import propcls from '@/shared/ui/CommentInput/CommentInput.module.scss'
 import SortHeader from '@/shared/ui/SortHeader/SortHeader.vue'
 import { StatusSelect } from '@/entities/Status'
@@ -48,6 +49,13 @@ import { formatDate, isOverdue } from '@/shared/lib/date'
 import CompaniesSettings from '../CompaniesSettings/CompaniesSettings.vue'
 
 const isModalOpen = ref(false)
+
+const withHighlight = (
+    flag: boolean | undefined,
+    title: string,
+    cell: VNode,
+) =>
+    flag ? h('div', { class: highlightCls.highlighted, title }, [cell]) : cell
 
 const getBackgroundColorClass = (value) => {
     let numValue = Number(value)
@@ -202,6 +210,10 @@ const columns = ref([
     columnHelper.accessor((row) => row.nextContactDate, {
         id: 'nextContactDate',
         cell: (info) => {
+            // Saving a new date reloads the list, so this updates by itself.
+            const overdue = isOverdue(info.row.original.nextContactDate)
+            // Not withHighlight(): the date picker draws its own input box, so
+            // it takes the shared highlight colours through a prop instead.
             return h(Datepicker, {
                 key: info.row.original.id,
                 name: 'nextContactDate',
@@ -209,8 +221,10 @@ const columns = ref([
                 placeholder: 'Wybierz datę',
                 onChange: onDataChange(info.row.original.id, 'nextContactDate'),
                 defaultValue: info.row.original.nextContactDate || undefined,
-                // Saving a new date reloads the list, so this updates by itself.
-                highlighted: isOverdue(info.row.original.nextContactDate),
+                highlighted: overdue,
+                title: overdue
+                    ? 'Data następnego kontaktu już minęła'
+                    : undefined,
             })
         },
         header: () => {
@@ -303,13 +317,17 @@ const columns = ref([
     columnHelper.accessor((row) => row.name, {
         id: 'name',
         cell: (info) =>
-            h(CommentInput, {
-                key: info.row.original.id,
-                className: propcls.largeFont,
-                onUpdate: onDataChange(info.row.original.id, 'name'),
-                defaultValue: info.getValue(),
-                placeholder: 'Firma XYZ',
-            }),
+            withHighlight(
+                info.row.original.duplicate_name,
+                'Istnieje inny lead o tej samej nazwie',
+                h(CommentInput, {
+                    key: info.row.original.id,
+                    className: propcls.largeFont,
+                    onUpdate: onDataChange(info.row.original.id, 'name'),
+                    defaultValue: info.getValue(),
+                    placeholder: 'Firma XYZ',
+                }),
+            ),
         header: () => {
             return h(SortHeader, {
                 name: 'Nazwa firmy',
@@ -692,20 +710,24 @@ const columns = ref([
     columnHelper.accessor((row) => row.nip, {
         id: 'nip',
         cell: (info) =>
-            h(NipInput, {
-                placeholder: '123-456-78-90',
-                onUpdate: onDataChange(info.row.original.id, 'nip'),
-                key: info.row.original.id,
-                defaultValue: info.getValue(),
-                validateFn: (value: string) => {
-                    const isValid = validateNip(value)
-                    if (!isValid) {
-                        toast.error('Niepoprawny NIP')
+            withHighlight(
+                info.row.original.duplicate_nip,
+                'Istnieje inny lead z tym samym numerem NIP',
+                h(NipInput, {
+                    placeholder: '123-456-78-90',
+                    onUpdate: onDataChange(info.row.original.id, 'nip'),
+                    key: info.row.original.id,
+                    defaultValue: info.getValue(),
+                    validateFn: (value: string) => {
+                        const isValid = validateNip(value)
+                        if (!isValid) {
+                            toast.error('Niepoprawny NIP')
+                            return isValid
+                        }
                         return isValid
-                    }
-                    return isValid
-                },
-            }),
+                    },
+                }),
+            ),
         header: () => {
             return h(SortHeader, {
                 name: 'NIP',
@@ -837,7 +859,8 @@ const columns = ref([
                 filter: DeclarationStatusFilter,
                 onUpdate: changeOrder('company.declarationStatus'),
                 value:
-                    companyFilterStore.getOrderBy === 'company.declarationStatus'
+                    companyFilterStore.getOrderBy ===
+                    'company.declarationStatus'
                         ? companyFilterStore.getOrder
                         : null,
                 loading: isSortHeaderLoading('company.declarationStatus'),

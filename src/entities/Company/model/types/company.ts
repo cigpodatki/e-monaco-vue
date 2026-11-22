@@ -38,6 +38,8 @@ export interface Company {
     role: string
     phone: string
     phone2: string
+    duplicate_name?: boolean
+    duplicate_nip?: boolean
     email: string
     last_contact_date: string
     last_contact_comment: string

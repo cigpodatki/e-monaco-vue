@@ -74,10 +74,10 @@ function onUpdate(newValue: string) {
                 '--dp-font-size': 'var(--font-size-s)',
                 '--dp-border-radius': 'var(--default-border-radius)',
                 '--dp-background-color': highlighted
-                    ? 'var(--status-red-bg-color)'
+                    ? 'var(--highlight-bg-color)'
                     : 'var(--light-grey-color)',
                 ...(highlighted
-                    ? { '--dp-text-color': 'var(--status-red-color)' }
+                    ? { '--dp-text-color': 'var(--highlight-color)' }
                     : {}),
                 '--dp-border-color-hover': 'var(--stroke-color)',
                 width: width,
