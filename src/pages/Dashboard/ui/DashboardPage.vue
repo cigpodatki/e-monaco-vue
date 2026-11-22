@@ -11,9 +11,14 @@ const selectedCompanies = ref<string[]>([])
 
 const selectionCountValue = computed(() => selectionCount.value)
 
+const companiesTable = ref<InstanceType<typeof CompaniesTable> | null>(null)
+
+// After a multi-edit. The checkboxes are driven by the table's own Set, so it
+// must be cleared there; the table then emits the empty selection back here.
 const handleClearSelection = () => {
     selectedCompanies.value = []
     selectionCount.value = 0
+    companiesTable.value?.clearSelectedCompanies()
 }
 </script>
 
@@ -37,6 +42,7 @@ const handleClearSelection = () => {
                 />
 
                 <CompaniesTable
+                    ref="companiesTable"
                     @update-selection-count="
                         (count) => {
                             selectionCount = count

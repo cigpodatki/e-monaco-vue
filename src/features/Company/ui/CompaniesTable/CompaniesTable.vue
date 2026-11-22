@@ -137,6 +137,9 @@ const clearSelectedCompanies = () => {
     emit('update-selected-companies', Array.from(selectedCompanies.value))
 }
 
+// The page calls this after a multi-edit (the selection lives here).
+defineExpose({ clearSelectedCompanies })
+
 const toggleSelectAll = () => {
     const companies = data.value?.companies || []
     if (allSelected.value) {
