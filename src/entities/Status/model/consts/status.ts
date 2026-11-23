@@ -1,141 +1,76 @@
-import type { SelectOption } from '@/shared/ui/Select/types'
-import { CompanyStatus } from '../types/status'
+import type { CompanyStatus } from '../types/status'
 
-export const companyStatusMap = {
-    [CompanyStatus.TO_BE_VERIFIED]: 'DO WERYFIKACJI',
-    [CompanyStatus.CALL_BACK]: 'ZADZWOŃ',
-    [CompanyStatus.DOESNT_EXIST]: 'NIE ISTNIEJE',
-    [CompanyStatus.LEASE_ONLY]: 'TYLKO LEASING',
-    [CompanyStatus.NOT_A_TARGET]: 'NIE TARGET',
-    [CompanyStatus.LOCAL_PATRIOT]: 'LOKALNY PATRIOTA',
-    [CompanyStatus.ACTIVITY]: 'DZIAŁALNOŚĆ',
-    [CompanyStatus.SMALL_SAVINGS]: 'MAŁA OSZCZĘDNOŚĆ',
-    [CompanyStatus.NOT_INTERESTED]: 'NIEZAINTERESOWANI',
-    [CompanyStatus.NEXT_CAMPAIGN]: 'NASTĘPNA KAMPANIA',
-    [CompanyStatus.CANNOT_BE_CALLED]: 'NIE ODBIERA',
-    [CompanyStatus.UNREACHABLE]: 'BRAK KONTAKTU',
-    [CompanyStatus.OTHER]: 'INNY',
-    [CompanyStatus.CONVERSATION]: 'ROZMOWA',
-    [CompanyStatus.OFFER]: 'OFERTA',
-    [CompanyStatus.AGREEMENT]: 'UMOWA',
-    [CompanyStatus.DOCUMENTS]: 'DOKUMENTY',
-    [CompanyStatus.OUR_CLIENT]: 'NASZ KLIENT',
-    [CompanyStatus.RESIGNED]: 'ZREZYGNOWAŁ',
+export interface StatusColors {
+    color: string
+    bgColor: string
 }
 
-export const options: SelectOption[] = [
-    {
-        id: CompanyStatus.TO_BE_VERIFIED,
-        name: companyStatusMap[CompanyStatus.TO_BE_VERIFIED],
-        bgColor: 'var(--status-gray-bg-color)',
-        color: 'var(--status-green-color)',
-    },
-    {
-        id: CompanyStatus.CALL_BACK,
-        name: companyStatusMap[CompanyStatus.CALL_BACK],
+const red = {
+    bgColor: 'var(--status-red-medium)',
+    color: 'var(--text-color-red-medium)',
+}
+const orange = {
+    bgColor: 'var(--status-yellow-orange-medium)',
+    color: 'var(--text-color-yellow-orange-medium)',
+}
+
+// Colours are a frontend concern; labels and rules come from the backend.
+const groupColors: Record<string, StatusColors> = {
+    base: {
         bgColor: 'var(--status-light-grey-bg-color)',
         color: 'var(--status-green-color)',
     },
-    {
-        id: CompanyStatus.UNREACHABLE,
-        name: companyStatusMap[CompanyStatus.UNREACHABLE],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
-    },
-    {
-        id: CompanyStatus.CONVERSATION,
-        name: companyStatusMap[CompanyStatus.CONVERSATION],
-        bgColor: 'var(--status-green-lightest)',
-        color: 'var(--text-color-lightest-green)',
-    },
-    {
-        id: CompanyStatus.AGREEMENT,
-        name: companyStatusMap[CompanyStatus.AGREEMENT],
-        bgColor: 'var(--status-green-light)',
-        color: 'var(--text-color-light-green)',
-    },
-    {
-        id: CompanyStatus.DOCUMENTS,
-        name: companyStatusMap[CompanyStatus.DOCUMENTS],
-        bgColor: 'var(--status-green-medium)',
-        color: 'var(--text-color-medium-green)',
-    },
-    {
-        id: CompanyStatus.DOESNT_EXIST,
-        name: companyStatusMap[CompanyStatus.DOESNT_EXIST],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
-    },
-    {
-        id: CompanyStatus.OUR_CLIENT,
-        name: companyStatusMap[CompanyStatus.OUR_CLIENT],
-        bgColor: 'var(--status-green-dark)',
-        color: 'var(--text-color-dark-green)',
-    },
-    {
-        id: CompanyStatus.NEXT_CAMPAIGN,
-        name: companyStatusMap[CompanyStatus.NEXT_CAMPAIGN],
+    dropped: red,
+    small_savings: orange,
+    negative: red,
+}
+
+const statusColors: Record<CompanyStatus, StatusColors> = {
+    cannot_be_called: orange,
+    next_campaign: {
         bgColor: 'var(--status-purple-pastel)',
         color: 'var(--text-color-purple-pastel)',
     },
-    {
-        id: CompanyStatus.LEASE_ONLY,
-        name: companyStatusMap[CompanyStatus.LEASE_ONLY],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
+    conversation: {
+        bgColor: 'var(--status-green-lightest)',
+        color: 'var(--text-color-lightest-green)',
     },
-    {
-        id: CompanyStatus.NOT_A_TARGET,
-        name: companyStatusMap[CompanyStatus.NOT_A_TARGET],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
-    },
-    {
-        id: CompanyStatus.OFFER,
-        name: companyStatusMap[CompanyStatus.OFFER],
+    offer: {
         bgColor: 'var(--status-green-lighter)',
         color: 'var(--text-color-lighter-green)',
     },
-    {
-        id: CompanyStatus.NOT_INTERESTED,
-        name: companyStatusMap[CompanyStatus.NOT_INTERESTED],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
+    agreement: {
+        bgColor: 'var(--status-green-light)',
+        color: 'var(--text-color-light-green)',
     },
-    {
-        id: CompanyStatus.ACTIVITY,
-        name: companyStatusMap[CompanyStatus.ACTIVITY],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
+    documents: {
+        bgColor: 'var(--status-green-medium)',
+        color: 'var(--text-color-medium-green)',
     },
-    {
-        id: CompanyStatus.RESIGNED,
-        name: companyStatusMap[CompanyStatus.RESIGNED],
+    declaration: {
+        bgColor: 'var(--status-green-medium)',
+        color: 'var(--text-color-medium-green)',
+    },
+    invoice: {
+        bgColor: 'var(--status-green-medium)',
+        color: 'var(--text-color-medium-green)',
+    },
+    our_client: {
+        bgColor: 'var(--status-green-dark)',
+        color: 'var(--text-color-dark-green)',
+    },
+    former_client: {
         bgColor: 'var(--status-brown-red-medium)',
         color: 'var(--text-color-brown-red-medium)',
     },
-    {
-        id: CompanyStatus.OTHER,
-        name: companyStatusMap[CompanyStatus.OTHER],
+    other: {
         bgColor: 'var(--status-blue-bg-color)',
         color: 'var(--status-blue-color)',
     },
-    {
-        id: CompanyStatus.LOCAL_PATRIOT,
-        name: companyStatusMap[CompanyStatus.LOCAL_PATRIOT],
-        bgColor: 'var(--status-red-medium)',
-        color: 'var(--text-color-red-medium)',
-    },
-    {
-        id: CompanyStatus.CANNOT_BE_CALLED,
-        name: companyStatusMap[CompanyStatus.CANNOT_BE_CALLED],
-        bgColor: 'var(--status-yellow-orange-medium)',
-        color: 'var(--text-color-yellow-orange-medium)',
-    },
-    {
-        id: CompanyStatus.SMALL_SAVINGS,
-        name: companyStatusMap[CompanyStatus.SMALL_SAVINGS],
-        bgColor: 'var(--status-yellow-orange-medium)',
-        color: 'var(--text-color-yellow-orange-medium)',
-    },
-]
+}
+
+export const getStatusColors = (
+    code?: CompanyStatus,
+    group?: string,
+): StatusColors | undefined =>
+    (code && statusColors[code]) || (group ? groupColors[group] : undefined)

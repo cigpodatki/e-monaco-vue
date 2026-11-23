@@ -2,7 +2,7 @@ import { $api } from '@/shared/api/api'
 import { useMutation, useQueryClient } from 'vue-query'
 import { useToast } from 'vue-toastification'
 import type { Campaign } from '@/entities/Campaign'
-import { getApiErrorMessage } from '../lib/getApiErrorMessage'
+import { getApiErrorMessage } from '@/shared/lib/getApiErrorMessage'
 
 export const useUpdateCampaign = (onSuccess?: () => void) => {
     const toast = useToast()

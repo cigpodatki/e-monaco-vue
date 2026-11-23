@@ -1,0 +1,37 @@
+.group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: none;
+    background: none;
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    color: inherit;
+}
+
+.chevron {
+    display: inline-block;
+    width: 0.75rem;
+    transition: transform var(--transition);
+}
+
+.expanded {
+    transform: rotate(90deg);
+}
+
+// Sub-statuses, indented under their group.
+.child {
+    padding-left: 1.6rem;
+}
+
+.check {
+    display: inline-flex;
+    margin-left: auto;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}

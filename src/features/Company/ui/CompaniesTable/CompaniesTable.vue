@@ -6,7 +6,7 @@ import cls from './CompaniesTable.module.scss'
 import highlightCls from '@/shared/styles/highlight.module.scss'
 import propcls from '@/shared/ui/CommentInput/CommentInput.module.scss'
 import SortHeader from '@/shared/ui/SortHeader/SortHeader.vue'
-import { StatusSelect } from '@/entities/Status'
+import { StatusSelect, hasPhone } from '@/entities/Status'
 import { UserSelect, useUserStore } from '@/entities/User'
 import PriceInput from '@/shared/ui/PriceInput/PriceInput.vue'
 import {
@@ -390,6 +390,8 @@ const columns = ref([
                 name: 'status',
                 key: info.row.original.id,
                 defaultValue: info.row.original.status,
+                hasDate: !!info.row.original.nextContactDate,
+                hasPhone: hasPhone(info.row.original.contactPersons),
                 onUpdate: onDataChange(info.row.original.id, 'status'),
             })
         },

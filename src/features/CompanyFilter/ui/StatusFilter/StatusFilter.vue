@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FilterHeader from '@/shared/ui/FilterHeader/FilterHeader.vue'
 import { useCompanyFilterStore } from '../../model/store/companyFilterStore'
-import { CompanyStatus } from '@/entities/Status'
+import type { CompanyStatus } from '@/entities/Status'
 import { storeToRefs } from 'pinia'
 import MultiStatusSelect from '@/entities/Status/ui/StatusSelect/MultiStatusSelect.vue'
 

@@ -186,7 +186,8 @@ const columns2 = [
         id: 'brakKontaktu',
         cell: (info) =>
             h('span', { class: cls.boldText }, info.getValue() ?? 'N/A'),
-        header: () => h(SortHeader, { name: 'Brak Kontaktu', canSort: false }),
+        header: () =>
+            h(SortHeader, { name: 'Nie da się dodzwonić', canSort: false }),
     }),
     columnHelper.accessor((row) => row.dzialalnosc, {
         id: 'dzialalnosc',
@@ -198,7 +199,8 @@ const columns2 = [
         id: 'nieIstnieje',
         cell: (info) =>
             h('span', { class: cls.boldText }, info.getValue() ?? 'N/A'),
-        header: () => h(SortHeader, { name: 'Nie Istnieje', canSort: false }),
+        header: () =>
+            h(SortHeader, { name: 'Firma nie istnieje', canSort: false }),
     }),
     columnHelper.accessor((row) => row.nieTarget, {
         id: 'nieTarget',

@@ -132,11 +132,13 @@ const onSubmit = async (values: any) => {
                         type="number"
                         placeholder="Wartość liczbowa całkowita"
                     />
+                    <!-- Empty: the backend sets 1.2 with a phone, otherwise 1.1. -->
                     <StatusSelect
                         label="Status"
                         as-input
                         name="status"
-                        showAllStatuses
+                        from="to_be_verified"
+                        placeholder="Automatycznie (1.1 / 1.2)"
                     />
                     <MunicipalitySelect
                         label="Gmina*"
