@@ -15,9 +15,8 @@ dayjs.extend(timezone)
 const TABLES_KEY = 'company-tables'
 const KNOWN_TABLES_KEY = 'company-tables-known'
 
-// Columns that existed before new-column tracking was introduced. Used only
-// once, for saved layouts that have no "known" list yet. Do not extend it:
-// columns added later are detected automatically via KNOWN_TABLES_KEY.
+// Columns from before new-column tracking. Do not extend: newer columns are
+// detected via KNOWN_TABLES_KEY.
 const LEGACY_TABLE_IDS = [
     '#id',
     'nextContactDate',
@@ -51,8 +50,7 @@ const LEGACY_TABLE_IDS = [
     'campaignId',
 ]
 
-// Returns the visible columns. Columns the user has never seen are added to a
-// saved layout once; after that, hiding them is remembered like any other.
+// Adds columns the user has never seen to a saved layout, once.
 function initTables(): string[] {
     const allIds = companyTableOptions.map((option) => option.id)
     const saved = localStorage.getItem(TABLES_KEY)

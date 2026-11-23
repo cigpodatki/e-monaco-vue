@@ -98,8 +98,7 @@
     --status-orange-bg-color: #ffebe4;
     --status-red-color: #e12121;
     --status-red-bg-color: #ffe0e0;
-    // Alert highlight in the lead table (overdue date, duplicate name/NIP).
-    // Change the colours here; see shared/styles/highlight.module.scss.
+    // Alert highlight (overdue date, duplicate name/NIP).
     --highlight-color: var(--status-red-color);
     --highlight-bg-color: var(--status-red-bg-color);
     --status-blue-color: #1751d0;

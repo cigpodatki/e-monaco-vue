@@ -1,14 +1,23 @@
 .FetchingOverlay {
-    // Centre of the screen.
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
     z-index: var(--modal-z-index);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Clicks pass through unless blocking.
+    pointer-events: none;
+}
+
+.blocking {
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.15);
+    cursor: progress;
+}
+
+.box {
     padding: 0.5rem 1rem;
     border-radius: var(--default-border-radius);
     background-color: var(--primary-invert-color);
     box-shadow: var(--box-shadow);
-    // Never blocks clicks on the page underneath.
-    pointer-events: none;
 }

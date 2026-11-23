@@ -14,7 +14,7 @@ interface Props {
     placeholder?: string
     width?: string
     defaultValue?: string
-    // Red bold text on a light red background (e.g. an overdue date).
+    // Overdue style: red text on a light red background.
     highlighted?: boolean
 }
 

@@ -8,7 +8,7 @@ import Flex from '@/shared/ui/Flex/Flex.vue'
 interface Props {
     isOpen: boolean
     title?: string
-    // Defaults to the lead question, which is where the modal started.
+    // Defaults to the lead question.
     message?: string
 }
 

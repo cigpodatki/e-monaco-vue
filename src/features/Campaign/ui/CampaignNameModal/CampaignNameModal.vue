@@ -11,8 +11,7 @@ import type { Campaign } from '@/entities/Campaign'
 import { useAddCampaign } from '../../model/services/useAddCampaign'
 import { useUpdateCampaign } from '../../model/services/useUpdateCampaign'
 
-// One modal for both actions: without `campaign` it adds a new one,
-// with `campaign` it renames that one.
+// Adds without `campaign`, renames with it.
 interface Props {
     isModalOpen: boolean
     campaign?: Campaign | null
@@ -34,7 +33,7 @@ const isLoading = computed(
     () => addCampaign.isLoading.value || updateCampaign.isLoading.value,
 )
 
-// Same limits as the backend; uniqueness is checked there (409 -> toast).
+// Uniqueness is checked by the backend (409).
 const schema = yup.object({
     title: yup
         .string()

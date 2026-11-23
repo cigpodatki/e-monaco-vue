@@ -23,7 +23,7 @@ export const useDeleteCampaign = () => {
                         : 'Usunięto kampanię',
                 )
                 queryClient.invalidateQueries('campaigns')
-                // Its leads now belong to campaign 0.
+                // Its leads moved to campaign 0.
                 queryClient.invalidateQueries('companies')
             },
             onError: (error) => {

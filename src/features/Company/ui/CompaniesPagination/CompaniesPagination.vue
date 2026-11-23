@@ -8,7 +8,7 @@ import ColorSquares from '@/shared/ui/ColorSquares/ColorSquares.vue'
 import { computed, toRefs, ref, onMounted } from 'vue'
 import {
     PAGE_SIZE,
-    PAGE_SIZE_OPTIONS,
+    COMPANY_PAGE_SIZE_OPTIONS,
     getPagesCount,
 } from '@/shared/const/pagination'
 import { useCompanyFilterStore } from '@/features/CompanyFilter'
@@ -35,7 +35,7 @@ const { count } = toRefs(props)
 const selectedPageSize = ref(PAGE_SIZE)
 
 const changePageSize = () => {
-    // Back to page 1: the old page number may not exist with the new size.
+    // The current page may not exist with the new size.
     filterStore.page = 1
     handleSetPageSize(selectedPageSize.value)
 }
@@ -96,7 +96,7 @@ const handleColorSelected = (color: string) => {
                 :class="cls.pageSizeSelect"
             >
                 <option
-                    v-for="option in PAGE_SIZE_OPTIONS"
+                    v-for="option in COMPANY_PAGE_SIZE_OPTIONS"
                     :key="option.value"
                     :value="option.value"
                 >

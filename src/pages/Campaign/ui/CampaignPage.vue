@@ -6,7 +6,6 @@ import { useCampaigns } from '@/features/Campaign/model/services/useCampaign'
 import { breadcrumbs } from '../model/const/breadcrumbs'
 import cls from './CampaignPage.module.scss'
 
-// Adding, renaming and deleting campaigns lives on "Zarządzanie kampaniami".
 const { data } = useCampaigns()
 </script>
 

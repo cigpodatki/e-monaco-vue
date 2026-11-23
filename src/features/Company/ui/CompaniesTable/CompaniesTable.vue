@@ -84,7 +84,7 @@ const handleModalUpdate = (value: boolean) => {
     isModalOpen.value = value
 }
 const companyFilterStore = useCompanyFilterStore()
-const { data, isLoading, isFetching, refetch } = useCompanies()
+const { data, isLoading, isFetching, isPreviousData, refetch } = useCompanies()
 const toast = useToast()
 const { onDataChange } = useCompanyActions()
 const { mutate: updateContactPerson } = useUpdatePersons()
@@ -146,7 +146,7 @@ const clearSelectedCompanies = () => {
     emit('update-selected-companies', Array.from(selectedCompanies.value))
 }
 
-// The page calls this after a multi-edit (the selection lives here).
+// Used by DashboardPage after a multi-edit.
 defineExpose({ clearSelectedCompanies })
 
 const toggleSelectAll = () => {
@@ -211,10 +211,8 @@ const columns = ref([
     columnHelper.accessor((row) => row.nextContactDate, {
         id: 'nextContactDate',
         cell: (info) => {
-            // Saving a new date reloads the list, so this updates by itself.
             const overdue = isOverdue(info.row.original.nextContactDate)
-            // Not withHighlight(): the date picker draws its own input box, so
-            // it takes the shared highlight colours through a prop instead.
+            // Not withHighlight(): the date picker takes the colours through a prop.
             return h(Datepicker, {
                 key: info.row.original.id,
                 name: 'nextContactDate',
@@ -1229,7 +1227,10 @@ const table = useVueTable({
         </div>
 
         <LoaderContainer :is-loading="isLoading"></LoaderContainer>
-        <FetchingOverlay :is-fetching="isFetching && !isLoading" />
+        <FetchingOverlay
+            :is-fetching="isFetching && isPreviousData"
+            blocking
+        />
         <CompaniesPagination :count="data?.count || 0" />
     </div>
 </template>

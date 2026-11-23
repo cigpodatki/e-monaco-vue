@@ -40,8 +40,7 @@ export const useLogin = () => {
 
                 userStore.setUser(res.data)
                 userStore.setInited()
-                // Not awaited: the dashboard opens right away and the alert
-                // pops up when the check returns.
+                // Not awaited, so the dashboard opens right away.
                 checkOverdueLeads()
                 router.push('/dashboard')
             },

@@ -1,4 +1,4 @@
-// Same approach as the Gminy table: the app body doesn't scroll.
+// The app body doesn't scroll.
 .tableWrapper {
     width: calc(100vw - var(--sidebar-width) - 2rem);
     height: 70vh;

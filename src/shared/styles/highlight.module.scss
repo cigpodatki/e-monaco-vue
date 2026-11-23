@@ -1,13 +1,11 @@
-// Shared alert highlight for table cells: duplicate name/NIP (and the overdue
-// date, which applies the same colours through the Datepicker's variables).
-// Colours: --highlight-color / --highlight-bg-color in app/styles/global.scss.
+// Alert highlight for table cells; colours: --highlight-* in app/styles/global.scss.
 .highlighted {
     background-color: var(--highlight-bg-color);
     border-radius: var(--default-border-radius);
     padding: 0.1rem 0.35rem;
     font-weight: 700;
 
-    // Text components set their own colour, so force it inside the highlight.
+    // Text components set their own colour.
     &,
     * {
         color: var(--highlight-color) !important;

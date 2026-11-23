@@ -39,15 +39,14 @@ const openUpdateMunicipalityRatesModal = (municipalityId: string) => {
     selectedMunicipalityId.value = municipalityId
 }
 
-const { data, isLoading, isFetching } = useMunicipality()
+const { data, isLoading, isFetching, isPreviousData } = useMunicipality()
 const toast = useToast()
 
 const { onDataChange } = useMunicipalityActions()
 
 const columnHelper = createColumnHelper<Municipality>()
 
-// A gmina without rates gets null from the backend. Format only after the null
-// check: calling toLocaleString on null threw and stopped the table rendering.
+// Rates are null for a gmina without rates.
 const formatValue = (value: number | null | undefined) =>
     value == null ? 'N/A' : value.toLocaleString('pl-PL') + ' zł'
 
@@ -180,7 +179,7 @@ const table = useVueTable({
             <Text color="quinary">Nie znaleziono danych</Text>
         </div>
         <LoaderContainer :is-loading="isLoading"></LoaderContainer>
-        <FetchingOverlay :is-fetching="isFetching && !isLoading" />
+        <FetchingOverlay :is-fetching="isFetching && isPreviousData" />
         <MunicaplitiesPagination :count="data?.count || 0" />
     </div>
 </template>

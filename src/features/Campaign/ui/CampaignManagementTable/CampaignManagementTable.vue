@@ -14,11 +14,10 @@ import { useCampaigns } from '../../model/services/useCampaign'
 import { useDeleteCampaign } from '../../model/services/useDeleteCampaign'
 import CampaignNameModal from '../CampaignNameModal/CampaignNameModal.vue'
 
-// The backend already sorts: newest first, campaign 0 last.
 const { data, isLoading } = useCampaigns()
 const { mutate: deleteCampaign, isLoading: isDeleting } = useDeleteCampaign()
 
-// null = add a new campaign; a campaign = rename it.
+// null = add, a campaign = rename.
 const isNameModalOpen = ref(false)
 const editedCampaign = ref<Campaign | null>(null)
 
@@ -65,7 +64,6 @@ function confirmDelete() {
             Dodaj kampanię
         </Button>
 
-        <!-- The app doesn't scroll the page (overflow: hidden), so the table scrolls itself. -->
         <div :class="cls.tableWrapper">
             <table :class="cls.CampaignManagementTable">
                 <thead :class="cls.header">

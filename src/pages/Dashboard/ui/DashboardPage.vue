@@ -14,8 +14,7 @@ const selectionCountValue = computed(() => selectionCount.value)
 
 const companiesTable = ref<InstanceType<typeof CompaniesTable> | null>(null)
 
-// After a multi-edit. The checkboxes are driven by the table's own Set, so it
-// must be cleared there; the table then emits the empty selection back here.
+// The checkboxes use the table's own Set, so clear it there.
 const handleClearSelection = () => {
     selectedCompanies.value = []
     selectionCount.value = 0
@@ -57,7 +56,6 @@ const handleClearSelection = () => {
                 />
             </Flex>
         </Flex>
-        <!-- Opened after login if the user has overdue leads. -->
         <OverdueAlertModal />
     </div>
 </template>

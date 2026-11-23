@@ -14,6 +14,8 @@ interface UseMunicipalityData {
     data: MunicipalityData
     isLoading: Ref<boolean>
     isFetching: Ref<boolean>
+    // Another page/size/filter is loading behind the old rows.
+    isPreviousData: Ref<boolean>
     refetch: Ref<() => void>
 }
 
@@ -23,14 +25,17 @@ export const useMunicipality = (): UseMunicipalityData => {
 
     const query = useQuery(
         ['municipalities', filters],
-        async () => {
-            const page = filters.value?.page || 1
+        async ({ queryKey }) => {
+            // Filters from the query key, not the live store, so the result matches its cache entry.
+            const [, keyFilters] = queryKey as [
+                string,
+                typeof municipalitiesFilterStore.$state | null,
+            ]
+            const page = keyFilters?.page || 1
             const response = await $api.get('municipalities', {
                 params: {
-                    ...filters.value,
-                    // Use the selected page size (it used the default 16, so
-                    // page 2 of a 50-row page started at row 17).
-                    skip: (page - 1) * (filters.value?.take ?? PAGE_SIZE),
+                    ...keyFilters,
+                    skip: (page - 1) * (keyFilters?.take ?? PAGE_SIZE),
                     page: undefined,
                 },
             })

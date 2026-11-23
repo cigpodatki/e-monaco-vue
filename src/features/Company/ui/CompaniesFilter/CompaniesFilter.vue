@@ -29,7 +29,6 @@ const emit = defineEmits(['update-selected-companies'])
 
 const isBulkEditVisible = computed(() => props.selectionCount > 0)
 
-// After a multi-edit: pass it up, so the page clears the table's selection.
 function handleClearSelection() {
     emit('update-selected-companies', [])
 }

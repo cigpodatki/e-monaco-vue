@@ -1,29 +1,55 @@
 <script setup lang="ts">
 import cls from './FetchingOverlay.module.scss'
+import { onBeforeUnmount, ref, toRefs, watch } from 'vue'
 // @ts-ignore
 import Loader from 'vue-spinner/src/BeatLoader.vue'
 
-// Small spinner in the centre of the screen while a table reloads in the
-// background (new page, page size, filter). The first load uses LoaderContainer.
+// For loads the user asked for (page, size, filter, sort): pass
+// isFetching && isPreviousData, so background refreshes don't show it.
 interface Props {
     isFetching: boolean
+    blocking?: boolean
 }
 
-defineProps<Props>()
+// Quick reloads (e.g. after an inline edit) finish first, so nothing flashes.
+const SHOW_AFTER_MS = 300
+
+const props = defineProps<Props>()
+const { isFetching } = toRefs(props)
+
+const isVisible = ref(false)
+let timer: ReturnType<typeof setTimeout> | undefined
+
+watch(
+    isFetching,
+    (fetching) => {
+        clearTimeout(timer)
+        if (fetching) {
+            timer = setTimeout(() => (isVisible.value = true), SHOW_AFTER_MS)
+        } else {
+            isVisible.value = false
+        }
+    },
+    { immediate: true },
+)
+
+onBeforeUnmount(() => clearTimeout(timer))
 </script>
 
 <template>
     <Teleport to="body">
         <div
-            v-if="isFetching"
-            :class="cls.FetchingOverlay"
+            v-if="isVisible"
+            :class="[cls.FetchingOverlay, { [cls.blocking]: blocking }]"
             role="status"
             aria-label="Ładowanie"
         >
-            <Loader
-                color="var(--primary-variant-color)"
-                size="10px"
-            />
+            <div :class="cls.box">
+                <Loader
+                    color="var(--primary-variant-color)"
+                    size="10px"
+                />
+            </div>
         </div>
     </Teleport>
 </template>

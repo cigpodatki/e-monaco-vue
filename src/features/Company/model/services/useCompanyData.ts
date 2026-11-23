@@ -27,7 +27,7 @@ export const useCompaniesData = (): UseCompaniesData => {
     const fetchData = async (): Promise<CompaniesData> => {
         try {
             const page = filters.value?.page || 1
-            // ?? not ||: take 0 ("Wszystkie") is a real value.
+            // ?? not ||: take 0 means all rows.
             const take = filters.value?.take ?? PAGE_SIZE
             const response = await $api.get('companies', {
                 params: {
@@ -51,12 +51,8 @@ export const useCompaniesData = (): UseCompaniesData => {
     }
 
     const setPageSize = async (pageSize: number) => {
+        // The new key refetches by itself; an invalidate would re-run the old query.
         filters.value.take = pageSize
-        await queryClient.invalidateQueries('companies')
-
-        setTimeout(() => {
-            queryClient.invalidateQueries('companies')
-        }, 1000)
     }
 
     companyFilterStore.$subscribe(
