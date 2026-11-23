@@ -1,4 +1,5 @@
 import type { CompanyStatus } from '@/entities/Status'
+import type { DeclarationStatus } from '@/entities/DeclarationStatus'
 import type { Order } from '@/shared/types/order'
 import { defineStore } from 'pinia'
 import { PAGE_SIZE } from '@/shared/const/pagination'
@@ -11,10 +12,73 @@ import type { Company } from '@/entities/Company'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+const TABLES_KEY = 'company-tables'
+const KNOWN_TABLES_KEY = 'company-tables-known'
+
+// Columns from before new-column tracking. Do not extend: newer columns are
+// detected via KNOWN_TABLES_KEY.
+const LEGACY_TABLE_IDS = [
+    '#id',
+    'nextContactDate',
+    'contactHistories',
+    'comment',
+    'nip',
+    'name',
+    'supply',
+    'frugality',
+    'status',
+    'municipality',
+    'taxincrease',
+    'kitrate',
+    'year',
+    'firstName',
+    'lastName',
+    'role',
+    'phone',
+    'email',
+    'activation',
+    'rentalFee',
+    'statement',
+    'tractor',
+    'trailer',
+    'ourTaxes',
+    'theirsTaxes',
+    'tractorAmount',
+    'trailerAmount',
+    'otherAmount',
+    'contactPersons',
+    'campaignId',
+]
+
+// Adds columns the user has never seen to a saved layout, once.
+function initTables(): string[] {
+    const allIds = companyTableOptions.map((option) => option.id)
+    const saved = localStorage.getItem(TABLES_KEY)
+    const knownRaw = localStorage.getItem(KNOWN_TABLES_KEY)
+
+    localStorage.setItem(KNOWN_TABLES_KEY, allIds.join(','))
+
+    if (!saved) return allIds
+
+    const tables = saved.split(',')
+    const known = knownRaw ? knownRaw.split(',') : LEGACY_TABLE_IDS
+    const newIds = allIds.filter(
+        (id) => !known.includes(id) && !tables.includes(id),
+    )
+
+    if (newIds.length) {
+        tables.push(...newIds)
+        localStorage.setItem(TABLES_KEY, tables.join(','))
+    }
+
+    return tables
+}
+
 export const useCompanyFilterStore = defineStore('companyFilter', {
     state: () => ({
         owners: [] as string[],
         status: [] as CompanyStatus[],
+        declarationStatuses: [] as DeclarationStatus[],
         municipalities: [] as string[],
         contactPersons: [] as string[],
         order: null as null | Order,
@@ -23,9 +87,7 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         q: '',
         freeText: {} as Record<string, string[]>,
         take: PAGE_SIZE,
-        tables: localStorage.getItem('company-tables')
-            ? localStorage.getItem('company-tables')?.split(',')
-            : companyTableOptions.map((option) => option.id),
+        tables: initTables(),
         dateRange: [] as string[],
         from_next_date: null as string | null,
         to_next_date: null as string | null,
@@ -69,6 +131,9 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         getCampaigns(state) {
             return state.campaigns
         },
+        getDeclarationStatuses(state) {
+            return state.declarationStatuses
+        },
     },
     actions: {
         setDateRange(dateRange: (string | null)[]) {
@@ -99,7 +164,7 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         },
         setTables(tables: string[]) {
             this.tables = tables
-            localStorage.setItem('company-tables', tables.join(','))
+            localStorage.setItem(TABLES_KEY, tables.join(','))
         },
         setDateNull() {
             this.from_next_date = 'null'
@@ -146,6 +211,10 @@ export const useCompanyFilterStore = defineStore('companyFilter', {
         },
         setCampaigns(campaigns: string[]) {
             this.campaigns = campaigns
+            this.page = 1
+        },
+        setDeclarationStatuses(value: DeclarationStatus[]) {
+            this.declarationStatuses = value
             this.page = 1
         },
     },

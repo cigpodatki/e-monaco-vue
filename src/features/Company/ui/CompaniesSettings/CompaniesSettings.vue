@@ -74,6 +74,8 @@ const getDuplicatedCompanyData = (leadData: any) => {
         activation: rawLeadData.activation || 0,
         rentalFee: rawLeadData.rentalFee || 0,
         statement: rawLeadData.statement || 0,
+        declarationFee: rawLeadData.declarationFee || 0,
+        declarationStatus: rawLeadData.declarationStatus || 'unknown',
         kitrate: rawLeadData.kitrate || 0,
         supply: rawLeadData.supply || 0,
         taxincrease: rawLeadData.taxincrease || 0,
@@ -88,6 +90,7 @@ const getDuplicatedCompanyData = (leadData: any) => {
                   lastName: person.lastName || '',
                   role: person.role || '',
                   phone: person.phone || '',
+                  phone2: person.phone2 || '',
                   email: isValidEmail(person.email) ? person.email : null,
               }))
             : [],

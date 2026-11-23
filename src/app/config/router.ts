@@ -4,6 +4,7 @@ import { ContactPersonsPage } from '@/pages/ContactPersons'
 import { UsersPage } from '@/pages/Users'
 import { MunicipalitiesPage } from '@/pages/Municipalities'
 import { CampaignPage } from '@/pages/Campaign'
+import { CampaignManagementPage } from '@/pages/CampaignManagement'
 import { Sidebar } from '@/widgets/Sidebar'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -14,6 +15,7 @@ export enum AppRoutes {
     PERSONS = 'persons',
     MUNICIPALITIES = 'munucipalities',
     CAMPAIGN = 'campaign',
+    CAMPAIGN_MANAGEMENT = 'campaign-management',
 }
 
 export const getRouteMain = () => '/dashboard'
@@ -22,6 +24,7 @@ export const getRouteUsers = () => '/users'
 export const getRouteContactPersons = () => '/persons'
 export const getRouteMunicipalities = () => '/municipalities'
 export const getRouteCampaign = () => '/campaign'
+export const getRouteCampaignManagement = () => '/campaign-management'
 
 const routes = [
     { path: '/', components: LoginPage },
@@ -59,6 +62,13 @@ const routes = [
         components: {
             sidebar: Sidebar,
             default: CampaignPage,
+        },
+    },
+    {
+        path: getRouteCampaignManagement(),
+        components: {
+            sidebar: Sidebar,
+            default: CampaignManagementPage,
         },
     },
 ]

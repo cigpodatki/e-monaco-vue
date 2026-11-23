@@ -1,5 +1,6 @@
 import { useMunicipalityFilterStore } from '@/features/MunicipalitiesFilter'
 import { $api } from '@/shared/api/api'
+import { PAGE_SIZE } from '@/shared/const/pagination'
 import { debounce } from 'lodash'
 import { ref, type Ref } from 'vue'
 import { useQuery, useQueryClient, type UseQueryOptions } from 'vue-query'
@@ -23,13 +24,20 @@ export const useMunicipalityData = (): UseMunicipalityData => {
     const isLoading = ref(false)
     const queryClient = useQueryClient()
 
-    const fetchData = async (): Promise<MunicipalityData> => {
+    const fetchData = async ({
+        queryKey,
+    }: {
+        queryKey: unknown
+    }): Promise<MunicipalityData> => {
+        // Filters from the query key (see useCompanies).
+        const [, keyFilters] = queryKey as [string, typeof filters.value]
         try {
-            const page = filters.value?.page || 1
-            const take = filters.value?.take || 1
+            const page = keyFilters?.page || 1
+            // ?? not ||: take 0 means all rows.
+            const take = keyFilters?.take ?? PAGE_SIZE
             const response = await $api.get('municipalities', {
                 params: {
-                    ...filters.value,
+                    ...keyFilters,
                     skip: (page - 1) * take,
                     take,
                     page: undefined,
@@ -55,12 +63,8 @@ export const useMunicipalityData = (): UseMunicipalityData => {
     )
 
     const setPageSize = async (pageSize: number) => {
+        // The new key refetches by itself; an invalidate would re-run the old query.
         filters.value.take = pageSize
-        await queryClient.invalidateQueries('municipalities')
-
-        setTimeout(() => {
-            queryClient.invalidateQueries('municipalities')
-        }, 1000)
     }
 
     municipalitiesFilterStore.$subscribe(

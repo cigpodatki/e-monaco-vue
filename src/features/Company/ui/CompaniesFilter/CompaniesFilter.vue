@@ -25,7 +25,13 @@ const props = defineProps<{
     selectedCompanies: string[]
 }>()
 
+const emit = defineEmits(['update-selected-companies'])
+
 const isBulkEditVisible = computed(() => props.selectionCount > 0)
+
+function handleClearSelection() {
+    emit('update-selected-companies', [])
+}
 
 const changeInputValue = debounce((value: string) => {
     companyFilterStore.setSearchTerm(value)

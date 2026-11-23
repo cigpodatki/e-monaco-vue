@@ -14,8 +14,12 @@ interface UseCompaniesData {
     data: CompaniesData
     isLoading: Ref<boolean>
     isFetching: Ref<boolean>
+    // Another page/size/filter is loading behind the old rows.
+    isPreviousData: Ref<boolean>
     refetch: Ref<() => void>
 }
+
+type CompanyFilters = ReturnType<typeof useCompanyFilterStore>['$state']
 
 export const useCompanies = (): UseCompaniesData => {
     const companyFilterStore = useCompanyFilterStore()
@@ -25,12 +29,15 @@ export const useCompanies = (): UseCompaniesData => {
 
     const query = useQuery(
         ['companies', filters],
-        async () => {
-            const page = filters.value?.page || 1
+        async ({ queryKey }) => {
+            // Filters from the query key, not the live store, so the result matches its cache entry.
+            const [, keyFilters] = queryKey as [string, CompanyFilters | null]
+            const page = keyFilters?.page || 1
             const response = await $api.get('companies', {
                 params: {
-                    ...filters.value,
-                    skip: (page - 1) * (filters.value?.take || PAGE_SIZE),
+                    ...keyFilters,
+                    // ?? not ||: take 0 means all rows.
+                    skip: (page - 1) * (keyFilters?.take ?? PAGE_SIZE),
                     page: undefined,
                 },
             })

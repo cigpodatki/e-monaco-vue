@@ -21,6 +21,15 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 dayjs.locale('pl')
 
+export function startOfToday(): Date {
+    return dayjs().startOf('day').toDate()
+}
+
+// Today, future dates and no date aren't overdue.
+export function isOverdue(date?: string | Date | null): boolean {
+    return !!date && dayjs(date).isBefore(startOfToday())
+}
+
 export function formatDate(date: Date): string {
     const inputDate = dayjs(date)
 

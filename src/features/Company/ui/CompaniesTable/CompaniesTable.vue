@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { createColumnHelper, getCoreRowModel } from '@tanstack/table-core'
 import { FlexRender, useVueTable } from '@tanstack/vue-table'
-import { h, ref, watch, computed } from 'vue'
+import { h, ref, watch, computed, type VNode } from 'vue'
 import cls from './CompaniesTable.module.scss'
+import highlightCls from '@/shared/styles/highlight.module.scss'
 import propcls from '@/shared/ui/CommentInput/CommentInput.module.scss'
 import SortHeader from '@/shared/ui/SortHeader/SortHeader.vue'
-import { StatusSelect } from '@/entities/Status'
+import { StatusSelect, hasPhone } from '@/entities/Status'
 import { UserSelect, useUserStore } from '@/entities/User'
 import PriceInput from '@/shared/ui/PriceInput/PriceInput.vue'
 import {
@@ -23,6 +24,7 @@ import { useToast } from 'vue-toastification'
 import ActionLink from '@/shared/ui/ActionLink/ActionLink.vue'
 import CompanyHistoriesModal from '../CompanyHistoriesModal/CompanyHistoriesModal.vue'
 import LoaderContainer from '@/shared/ui/LoaderContainer/LoaderContainer.vue'
+import FetchingOverlay from '@/shared/ui/FetchingOverlay/FetchingOverlay.vue'
 import Text from '@/shared/ui/Text/Text.vue'
 import {
     MunicipalitiesFilter,
@@ -42,10 +44,19 @@ import CampaignSelect from '@/features/Campaign/ui/CampaignSelect/CampaignSelect
 import EditContactPersonsModal from '@/features/EditContactPersonsModal/EditContactPersonsModal.vue'
 import { useUpdatePersons } from '@/features/ContactPersons/model/services/useUpdatePersons'
 import CampaignFilter from '@/features/CompanyFilter/ui/CampaignFilter/CampaignFilter.vue'
-import { formatDate } from '@/shared/lib/date'
+import DeclarationStatusFilter from '@/features/CompanyFilter/ui/DeclarationStatusFilter/DeclarationStatusFilter.vue'
+import { DeclarationStatusSelect } from '@/entities/DeclarationStatus'
+import { formatDate, isOverdue } from '@/shared/lib/date'
 import CompaniesSettings from '../CompaniesSettings/CompaniesSettings.vue'
 
 const isModalOpen = ref(false)
+
+const withHighlight = (
+    flag: boolean | undefined,
+    title: string,
+    cell: VNode,
+) =>
+    flag ? h('div', { class: highlightCls.highlighted, title }, [cell]) : cell
 
 const getBackgroundColorClass = (value) => {
     let numValue = Number(value)
@@ -73,7 +84,7 @@ const handleModalUpdate = (value: boolean) => {
     isModalOpen.value = value
 }
 const companyFilterStore = useCompanyFilterStore()
-const { data, isLoading, isFetching, refetch } = useCompanies()
+const { data, isLoading, isFetching, isPreviousData, refetch } = useCompanies()
 const toast = useToast()
 const { onDataChange } = useCompanyActions()
 const { mutate: updateContactPerson } = useUpdatePersons()
@@ -134,6 +145,9 @@ const clearSelectedCompanies = () => {
     emit('update-selection-count', selectedCompanies.value.size)
     emit('update-selected-companies', Array.from(selectedCompanies.value))
 }
+
+// Used by DashboardPage after a multi-edit.
+defineExpose({ clearSelectedCompanies })
 
 const toggleSelectAll = () => {
     const companies = data.value?.companies || []
@@ -197,6 +211,8 @@ const columns = ref([
     columnHelper.accessor((row) => row.nextContactDate, {
         id: 'nextContactDate',
         cell: (info) => {
+            const overdue = isOverdue(info.row.original.nextContactDate)
+            // Not withHighlight(): the date picker takes the colours through a prop.
             return h(Datepicker, {
                 key: info.row.original.id,
                 name: 'nextContactDate',
@@ -204,6 +220,10 @@ const columns = ref([
                 placeholder: 'Wybierz datę',
                 onChange: onDataChange(info.row.original.id, 'nextContactDate'),
                 defaultValue: info.row.original.nextContactDate || undefined,
+                highlighted: overdue,
+                title: overdue
+                    ? 'Data następnego kontaktu już minęła'
+                    : undefined,
             })
         },
         header: () => {
@@ -296,13 +316,17 @@ const columns = ref([
     columnHelper.accessor((row) => row.name, {
         id: 'name',
         cell: (info) =>
-            h(CommentInput, {
-                key: info.row.original.id,
-                className: propcls.largeFont,
-                onUpdate: onDataChange(info.row.original.id, 'name'),
-                defaultValue: info.getValue(),
-                placeholder: 'Firma XYZ',
-            }),
+            withHighlight(
+                info.row.original.duplicate_name,
+                'Istnieje inny lead o tej samej nazwie',
+                h(CommentInput, {
+                    key: info.row.original.id,
+                    className: propcls.largeFont,
+                    onUpdate: onDataChange(info.row.original.id, 'name'),
+                    defaultValue: info.getValue(),
+                    placeholder: 'Firma XYZ',
+                }),
+            ),
         header: () => {
             return h(SortHeader, {
                 name: 'Nazwa firmy',
@@ -366,6 +390,8 @@ const columns = ref([
                 name: 'status',
                 key: info.row.original.id,
                 defaultValue: info.row.original.status,
+                hasDate: !!info.row.original.nextContactDate,
+                hasPhone: hasPhone(info.row.original.contactPersons),
                 onUpdate: onDataChange(info.row.original.id, 'status'),
             })
         },
@@ -610,6 +636,42 @@ const columns = ref([
             })
         },
     }),
+    columnHelper.accessor((row) => row.phone2, {
+        id: 'phone2',
+        cell: (info) =>
+            h(CommentInput, {
+                key: info.row.original.id,
+                className: propcls.largeFont,
+                onUpdate: (newValue: string) =>
+                    updateContactPerson({
+                        id: info.row.original.topContactPersonId!,
+                        phone2: newValue,
+                    }),
+                defaultValue: info.getValue(),
+                placeholder: 'Telefon 2',
+                validateFn: () => {
+                    const isValid = !!info.row.original.topContactPersonId
+                    if (!isValid) {
+                        toast.error(
+                            'Firma nie posiada głównej osoby kontaktowej (z włączoną wartością TOP).',
+                        )
+                        return isValid
+                    }
+                    return isValid
+                },
+            }),
+        header: () => {
+            return h(SortHeader, {
+                name: 'Telefon 2',
+                onUpdate: changeOrder('phone2'),
+                value:
+                    companyFilterStore.getOrderBy === 'phone2'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('phone2'),
+            })
+        },
+    }),
     columnHelper.accessor((row) => row.email, {
         id: 'email',
         cell: (info) =>
@@ -649,20 +711,24 @@ const columns = ref([
     columnHelper.accessor((row) => row.nip, {
         id: 'nip',
         cell: (info) =>
-            h(NipInput, {
-                placeholder: '123-456-78-90',
-                onUpdate: onDataChange(info.row.original.id, 'nip'),
-                key: info.row.original.id,
-                defaultValue: info.getValue(),
-                validateFn: (value: string) => {
-                    const isValid = validateNip(value)
-                    if (!isValid) {
-                        toast.error('Niepoprawny NIP')
+            withHighlight(
+                info.row.original.duplicate_nip,
+                'Istnieje inny lead z tym samym numerem NIP',
+                h(NipInput, {
+                    placeholder: '123-456-78-90',
+                    onUpdate: onDataChange(info.row.original.id, 'nip'),
+                    key: info.row.original.id,
+                    defaultValue: info.getValue(),
+                    validateFn: (value: string) => {
+                        const isValid = validateNip(value)
+                        if (!isValid) {
+                            toast.error('Niepoprawny NIP')
+                            return isValid
+                        }
                         return isValid
-                    }
-                    return isValid
-                },
-            }),
+                    },
+                }),
+            ),
         header: () => {
             return h(SortHeader, {
                 name: 'NIP',
@@ -715,7 +781,7 @@ const columns = ref([
             ]),
         header: () => {
             return h(SortHeader, {
-                name: 'Czynsz',
+                name: 'Baza 1mc',
                 onUpdate: changeOrder('company.rentalFee'),
                 value:
                     companyFilterStore.getOrderBy === 'company.rentalFee'
@@ -739,7 +805,7 @@ const columns = ref([
             ]),
         header: () => {
             return h(SortHeader, {
-                name: 'Deklaracja',
+                name: 'Biuro 6mc',
                 onUpdate: changeOrder('company.statement'),
                 value:
                     companyFilterStore.getOrderBy === 'company.statement'
@@ -748,6 +814,58 @@ const columns = ref([
                 loading: isSortHeaderLoading('company.statement'),
             })
         },
+    }),
+    columnHelper.accessor((row) => row.declarationFee, {
+        id: 'declarationFee',
+        cell: (info) =>
+            h('div', { class: cls.narrowColumn }, [
+                h(PriceInput, {
+                    key: info.row.original.id,
+                    onUpdate: onDataChange(
+                        info.row.original.id,
+                        'declarationFee',
+                    ),
+                    defaultValue: info.row.original.declarationFee,
+                    withPrice: true,
+                    placeholder: 'Kwota',
+                }),
+            ]),
+        header: () => {
+            return h(SortHeader, {
+                name: 'Deklaracja',
+                onUpdate: changeOrder('company.declarationFee'),
+                value:
+                    companyFilterStore.getOrderBy === 'company.declarationFee'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('company.declarationFee'),
+            })
+        },
+    }),
+    columnHelper.accessor((row) => row.declarationStatus, {
+        id: 'declarationStatus',
+        cell: (info) =>
+            h(DeclarationStatusSelect, {
+                key: info.row.original.id,
+                name: 'declarationStatus',
+                defaultValue: info.row.original.declarationStatus,
+                onUpdate: onDataChange(
+                    info.row.original.id,
+                    'declarationStatus',
+                ),
+            }),
+        header: () =>
+            h(SortHeader, {
+                name: 'DEKL',
+                filter: DeclarationStatusFilter,
+                onUpdate: changeOrder('company.declarationStatus'),
+                value:
+                    companyFilterStore.getOrderBy ===
+                    'company.declarationStatus'
+                        ? companyFilterStore.getOrder
+                        : null,
+                loading: isSortHeaderLoading('company.declarationStatus'),
+            }),
     }),
     columnHelper.accessor((row) => row.tractor, {
         id: 'tractor',
@@ -1111,6 +1229,10 @@ const table = useVueTable({
         </div>
 
         <LoaderContainer :is-loading="isLoading"></LoaderContainer>
+        <FetchingOverlay
+            :is-fetching="isFetching && isPreviousData"
+            blocking
+        />
         <CompaniesPagination :count="data?.count || 0" />
     </div>
 </template>

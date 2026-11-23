@@ -21,13 +21,21 @@ import { storeToRefs } from 'pinia'
 
 const allowedPaths: Record<UserRoles, string[]> = {
     user: ['/dashboard', '/persons', '/municipalities'],
-    admin: ['/dashboard', '/users', '/persons', '/municipalities', '/campaign'],
+    admin: [
+        '/dashboard',
+        '/users',
+        '/persons',
+        '/municipalities',
+        '/campaign',
+        '/campaign-management',
+    ],
     superadmin: [
         '/dashboard',
         '/users',
         '/persons',
         '/municipalities',
         '/campaign',
+        '/campaign-management',
     ],
 }
 

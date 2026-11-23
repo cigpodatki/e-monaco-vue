@@ -5,15 +5,20 @@ import Flex from '@/shared/ui/Flex/Flex.vue'
 import Breadcrumbs from '@/shared/ui/Breadcrumbs/Breadcrumbs.vue'
 import { breadcrumbs } from '../model/consts/breadcrumbs'
 import { CompaniesFilter, CompaniesTable } from '@/features/Company/index'
+import { OverdueAlertModal } from '@/features/OverdueAlert'
 
 const selectionCount = ref<number>(0)
 const selectedCompanies = ref<string[]>([])
 
 const selectionCountValue = computed(() => selectionCount.value)
 
+const companiesTable = ref<InstanceType<typeof CompaniesTable> | null>(null)
+
+// The checkboxes use the table's own Set, so clear it there.
 const handleClearSelection = () => {
     selectedCompanies.value = []
     selectionCount.value = 0
+    companiesTable.value?.clearSelectedCompanies()
 }
 </script>
 
@@ -37,6 +42,7 @@ const handleClearSelection = () => {
                 />
 
                 <CompaniesTable
+                    ref="companiesTable"
                     @update-selection-count="
                         (count) => {
                             selectionCount = count
@@ -50,5 +56,6 @@ const handleClearSelection = () => {
                 />
             </Flex>
         </Flex>
+        <OverdueAlertModal />
     </div>
 </template>

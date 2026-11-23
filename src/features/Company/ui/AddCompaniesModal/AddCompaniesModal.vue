@@ -15,6 +15,7 @@ import Datepicker from '@/shared/ui/Datepicker/Datepicker.vue'
 import InputNipModal from '@/shared/ui/InputNipModal/InputNipModal.vue'
 import { storeToRefs } from 'pinia'
 import CampaignSelect from '@/features/Campaign/ui/CampaignSelect/CampaignSelect.vue'
+import { DeclarationStatusSelect } from '@/entities/DeclarationStatus'
 
 interface Props {
     isModalOpen: boolean
@@ -35,8 +36,16 @@ const emit = defineEmits(['update:isModalOpen'])
 const onSubmit = async (values: any) => {
     console.log('Form values:', values)
 
-    const { firstName, lastName, role, phone, email, campaigns, ...other } =
-        values
+    const {
+        firstName,
+        lastName,
+        role,
+        phone,
+        phone2,
+        email,
+        campaigns,
+        ...other
+    } = values
 
     const campaignId = campaigns || null
     const campaignTitle = campaigns ? campaigns.title : null
@@ -46,7 +55,14 @@ const onSubmit = async (values: any) => {
         campaignId,
         campaignTitle,
         contactPersons: [
-            { firstName, lastName, role, phone, email: email || undefined },
+            {
+                firstName,
+                lastName,
+                role,
+                phone,
+                phone2,
+                email: email || undefined,
+            },
         ],
     })
 }
@@ -116,11 +132,13 @@ const onSubmit = async (values: any) => {
                         type="number"
                         placeholder="Wartość liczbowa całkowita"
                     />
+                    <!-- Empty: the backend sets 1.2 with a phone, otherwise 1.1. -->
                     <StatusSelect
                         label="Status"
                         as-input
                         name="status"
-                        showAllStatuses
+                        from="to_be_verified"
+                        placeholder="Automatycznie (1.1 / 1.2)"
                     />
                     <MunicipalitySelect
                         label="Gmina*"
@@ -135,15 +153,26 @@ const onSubmit = async (values: any) => {
                     />
                     <Input
                         name="rentalFee"
-                        label="Czynsz"
+                        label="Baza 1mc"
                         type="number"
                         placeholder="Kwota w PLN"
                     />
                     <Input
                         name="statement"
+                        label="Biuro 6mc"
+                        placeholder="Kwota w PLN"
+                        type="number"
+                    />
+                    <Input
+                        name="declarationFee"
                         label="Deklaracja"
                         placeholder="Kwota w PLN"
                         type="number"
+                    />
+                    <DeclarationStatusSelect
+                        label="DEKL"
+                        as-input
+                        name="declarationStatus"
                     />
                     <Input
                         name="firstName"
@@ -172,6 +201,12 @@ const onSubmit = async (values: any) => {
                     <Input
                         name="phone"
                         label="Telefon"
+                        placeholder="Numer telefonu"
+                        type="tel"
+                    />
+                    <Input
+                        name="phone2"
+                        label="Telefon 2"
                         placeholder="Numer telefonu"
                         type="tel"
                     />

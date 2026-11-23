@@ -52,7 +52,7 @@ watch(defaultValue!, () => {
             :options="
                 data.map((it: Campaign) => ({
                     id: it.id,
-                    name: it.season ? `${it.title} ${it.season}` : it.title,
+                    name: it.title,
                 }))
             "
             :as-input="asInput"

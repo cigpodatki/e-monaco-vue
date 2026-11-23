@@ -1,0 +1,13 @@
+// Alert highlight for table cells; colours: --highlight-* in app/styles/global.scss.
+.highlighted {
+    background-color: var(--highlight-bg-color);
+    border-radius: var(--default-border-radius);
+    padding: 0.1rem 0.35rem;
+    font-weight: 700;
+
+    // Text components set their own colour.
+    &,
+    * {
+        color: var(--highlight-color) !important;
+    }
+}

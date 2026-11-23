@@ -13,6 +13,8 @@ import Button from '@/shared/ui/Button/Button.vue'
 import CampaignSelect from '@/features/Campaign/ui/CampaignSelect/CampaignSelect.vue'
 import Datepicker from '@/shared/ui/Datepicker/Datepicker.vue'
 import { storeToRefs } from 'pinia'
+import { useToast } from 'vue-toastification'
+import { getApiErrorMessage } from '@/shared/lib/getApiErrorMessage'
 
 const props = defineProps<{
     isModalOpen: boolean
@@ -21,7 +23,8 @@ const props = defineProps<{
 
 const userStore = useUserStore()
 const { user } = storeToRefs(userStore)
-const { mutate } = useUpdateCompany()
+const { mutate, mutateAsync } = useUpdateCompany({ quiet: true })
+const toast = useToast()
 
 const isDataLoaded = ref(false)
 
@@ -121,17 +124,30 @@ const onSubmit = async () => {
         })
         .filter((update) => Object.keys(update).length > 1)
 
-    try {
-        for (const update of companiesUpdates) {
-            await mutate(update)
-        }
-
-        clearSelection()
-    } catch (error) {
-        if (error.response) {
-            console.error('Error details:', error.response.data)
+    // Each lead is validated like an inline edit; one failure doesn't stop the rest.
+    let failed = 0
+    let firstError = ''
+    for (const update of companiesUpdates) {
+        try {
+            await mutateAsync(update)
+        } catch (error) {
+            failed++
+            firstError ||= getApiErrorMessage(error, '')
         }
     }
+
+    const total = companiesUpdates.length
+    if (failed) {
+        toast.warning(
+            `Nie zmieniono ${failed} z ${total} leadów${
+                firstError ? `: ${firstError}` : ''
+            }`,
+        )
+    } else if (total) {
+        toast.success(`Zaktualizowano leady: ${total}`)
+    }
+
+    clearSelection()
 }
 </script>
 

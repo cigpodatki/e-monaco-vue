@@ -10,6 +10,7 @@ import CommentInput from '@/shared/ui/CommentInput/CommentInput.vue'
 import Text from '@/shared/ui/Text/Text.vue'
 import type { Municipality } from '@/entities/Municipality/model/types/municipality'
 import LoaderContainer from '@/shared/ui/LoaderContainer/LoaderContainer.vue'
+import FetchingOverlay from '@/shared/ui/FetchingOverlay/FetchingOverlay.vue'
 import { useDeleteMunicipalities } from '@/features/Municipalities/model/services/useDeleteMunicipalities'
 import DeleteButton from '@/shared/ui/DeleteButton/DeleteButton.vue'
 import { useMunicipality } from '@/features/Municipalities/model/services/useMunicipality'
@@ -38,14 +39,16 @@ const openUpdateMunicipalityRatesModal = (municipalityId: string) => {
     selectedMunicipalityId.value = municipalityId
 }
 
-const { data, isLoading } = useMunicipality()
+const { data, isLoading, isFetching, isPreviousData } = useMunicipality()
 const toast = useToast()
 
 const { onDataChange } = useMunicipalityActions()
 
 const columnHelper = createColumnHelper<Municipality>()
 
-const formatValue = (value) => (value !== null ? value + ' zł' : 'N/A')
+// Rates are null for a gmina without rates.
+const formatValue = (value: number | null | undefined) =>
+    value == null ? 'N/A' : value.toLocaleString('pl-PL') + ' zł'
 
 const columns = [
     columnHelper.accessor((row) => row.name, {
@@ -58,27 +61,27 @@ const columns = [
             }),
         header: () => h(SortHeader, { name: 'Nazwa gminy', canSort: false }),
     }),
-    columnHelper.accessor((row) => row.kitrate.toLocaleString('pl-PL'), {
+    columnHelper.accessor((row) => row.kitrate, {
         id: 'kitRate',
         cell: (info) => formatValue(info.getValue()),
         header: () => h(SortHeader, { name: 'Zestaw', canSort: false }),
     }),
-    columnHelper.accessor((row) => row.taxincrease.toLocaleString('pl-PL'), {
+    columnHelper.accessor((row) => row.taxincrease, {
         id: 'taxIncrease',
         cell: (info) => formatValue(info.getValue()),
         header: () => h(SortHeader, { name: 'Wzrost podatku', canSort: false }),
     }),
-    columnHelper.accessor((row) => row.tractorRate.toLocaleString('pl-PL'), {
+    columnHelper.accessor((row) => row.tractorRate, {
         id: 'tractorRate',
         cell: (info) => formatValue(info.getValue()),
         header: () => h(SortHeader, { name: 'Stawka ciągnik', canSort: false }),
     }),
-    columnHelper.accessor((row) => row.trailerRate.toLocaleString('pl-PL'), {
+    columnHelper.accessor((row) => row.trailerRate, {
         id: 'trailerRate',
         cell: (info) => formatValue(info.getValue()),
         header: () => h(SortHeader, { name: 'Stawka naczepa', canSort: false }),
     }),
-    columnHelper.accessor((row) => row.otherRate.toLocaleString('pl-PL'), {
+    columnHelper.accessor((row) => row.otherRate, {
         id: 'otherRate',
         cell: (info) => formatValue(info.getValue()),
         header: () => h(SortHeader, { name: 'Stawka inne', canSort: false }),
@@ -176,6 +179,7 @@ const table = useVueTable({
             <Text color="quinary">Nie znaleziono danych</Text>
         </div>
         <LoaderContainer :is-loading="isLoading"></LoaderContainer>
+        <FetchingOverlay :is-fetching="isFetching && isPreviousData" />
         <MunicaplitiesPagination :count="data?.count || 0" />
     </div>
 </template>

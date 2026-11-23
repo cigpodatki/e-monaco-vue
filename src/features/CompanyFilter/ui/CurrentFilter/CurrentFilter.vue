@@ -25,6 +25,7 @@ const {
     getOwners,
     getOrderBy,
     getStatus,
+    getDeclarationStatuses,
     getMunicipalities,
     freeText,
     from_next_date,
@@ -55,8 +56,10 @@ const sortNameMap: Record<string, string> = {
     'company.ourTaxes': 'Podatek u nas',
     'company.frugality': 'Oszczędność',
     'company.activation': 'Aktywacja',
-    'company.rentalFee': 'Czynsz',
-    'company.statement': 'Deklaracja',
+    'company.rentalFee': 'Baza 1mc',
+    'company.statement': 'Biuro 6mc',
+    'company.declarationFee': 'Deklaracja',
+    'company.declarationStatus': 'DEKL',
     full_name: 'Imię osoby kontaktowej',
     first_name: 'Imię',
     last_name: 'Nazwisko',
@@ -70,6 +73,7 @@ const sortNameMap: Record<string, string> = {
     year: 'Rok',
     role: 'Rola',
     phone: 'Telefon',
+    phone2: 'Telefon 2',
     email: 'Email',
     tractor: 'Stawka ciągnik',
     trailer: 'Stawka naczepa',
@@ -180,6 +184,22 @@ const sortNameMap: Record<string, string> = {
                     @click="
                         () => {
                             store.setStatus([])
+                        }
+                    "
+                />
+            </div>
+
+            <div
+                v-if="getDeclarationStatuses?.length"
+                :class="cls.filterBtn"
+            >
+                DEKL
+                <Icon
+                    :icon="CloseIcon"
+                    cursor-pointer
+                    @click="
+                        () => {
+                            store.setDeclarationStatuses([])
                         }
                     "
                 />

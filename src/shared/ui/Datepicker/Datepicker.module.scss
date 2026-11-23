@@ -1,6 +1,11 @@
 .Datepicker {
 }
 
+// Colours come from the --dp-* variables.
+.highlighted :global(.dp__input) {
+    font-weight: 700;
+}
+
 .label {
     color: var(--secondary-color);
     font: var(--font-mini);

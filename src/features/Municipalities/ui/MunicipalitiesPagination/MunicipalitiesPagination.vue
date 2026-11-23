@@ -5,7 +5,11 @@ import ArrowUp from '@/shared/assets/icons/ArrowUp.vue'
 import Flex from '@/shared/ui/Flex/Flex.vue'
 import Icon from '@/shared/ui/Icon/Icon.vue'
 import { computed, toRefs, ref, onMounted } from 'vue'
-import { PAGE_SIZE } from '@/shared/const/pagination'
+import {
+    PAGE_SIZE,
+    MUNICIPALITY_PAGE_SIZE_OPTIONS,
+    getPagesCount,
+} from '@/shared/const/pagination'
 import { useMunicipalityFilterStore } from '@/features/MunicipalitiesFilter/model/store/municipalitiesFilterStore'
 import { storeToRefs } from 'pinia'
 import { useMunicipalityData } from '@/features/Municipalities/model/services/useMunicipalitiesData'
@@ -29,13 +33,15 @@ const { page } = storeToRefs(filterStore)
 
 const selectedPageSize = ref(PAGE_SIZE)
 
-const pageSizeOptions = [10, 20, 50, 100]
-
 const changePageSize = () => {
+    // The current page may not exist with the new size.
+    filterStore.page = 1
     handleSetPageSize(selectedPageSize.value)
 }
 
-let pagesCount = computed(() => Math.ceil(count.value / selectedPageSize.value))
+let pagesCount = computed(() =>
+    getPagesCount(count.value, selectedPageSize.value),
+)
 
 const inputPage = ref(1)
 
@@ -70,11 +76,11 @@ const goToPage = () => {
                 :class="cls.pageSizeSelect"
             >
                 <option
-                    v-for="option in pageSizeOptions"
-                    :key="option"
-                    :value="option"
+                    v-for="option in MUNICIPALITY_PAGE_SIZE_OPTIONS"
+                    :key="option.value"
+                    :value="option.value"
                 >
-                    {{ option }}
+                    {{ option.label }}
                 </option>
             </select>
             <Flex

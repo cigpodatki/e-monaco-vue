@@ -2,6 +2,7 @@ import type { ContactHistory } from '@/entities/ContactHistory'
 import type { ContactPerson } from '@/entities/ContactPerson'
 import type { Municipality } from '@/entities/Municipality'
 import type { CompanyStatus } from '@/entities/Status'
+import type { DeclarationStatus } from '@/entities/DeclarationStatus'
 import type { User } from '@/entities/User'
 
 export interface Company {
@@ -22,6 +23,8 @@ export interface Company {
     activation?: number
     rentalFee?: number
     statement?: number
+    declarationFee?: number
+    declarationStatus?: DeclarationStatus
     contactPersons: ContactPerson[]
     markDeleted: boolean
     frugality: number
@@ -34,6 +37,9 @@ export interface Company {
     full_name: string
     role: string
     phone: string
+    phone2: string
+    duplicate_name?: boolean
+    duplicate_nip?: boolean
     email: string
     last_contact_date: string
     last_contact_comment: string

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import cls from './Logo.module.scss'
 
 export default {

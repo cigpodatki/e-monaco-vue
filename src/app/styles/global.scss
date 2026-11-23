@@ -98,6 +98,9 @@
     --status-orange-bg-color: #ffebe4;
     --status-red-color: #e12121;
     --status-red-bg-color: #ffe0e0;
+    // Alert highlight (overdue date, duplicate name/NIP).
+    --highlight-color: var(--status-red-color);
+    --highlight-bg-color: var(--status-red-bg-color);
     --status-blue-color: #1751d0;
     --status-blue-bg-color: #dee9ff;
     --status-grey-color: #4f4d55;

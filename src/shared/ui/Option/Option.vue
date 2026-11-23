@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import ArrowDown from '@/shared/assets/icons/ArrowDown.vue'
 import DuplicateIcon from '@/shared/assets/icons/DuplicateIcon.vue'
@@ -14,7 +14,7 @@ const props = defineProps({
 
 const buttonText = 'Ustawienia'
 
-const getButtonClasses = (active) => {
+const getButtonClasses = (active: boolean) => {
     return [active ? cls.activeButton : cls.inactiveButton, cls.button]
 }
 </script>
